@@ -807,6 +807,9 @@
   /* ---------- Map highlight ---------- */
 
   var detail = document.getElementById('char-detail');
+  var glossaryEntries = Array.prototype.slice.call(
+    document.querySelectorAll('#glossary-section .person[data-char]')
+  );
 
   function clearHighlight() {
     svg.classList.remove('dimmed');
@@ -814,6 +817,7 @@
     svg.querySelectorAll('.sel').forEach(function (el) { el.classList.remove('sel'); });
     chip.classList.remove('on');
     detail.hidden = true;
+    glossaryEntries.forEach(function (p) { p.hidden = false; });
   }
 
   function highlightChar(id) {
@@ -843,6 +847,10 @@
       '<p class="role">' + c.role + '</p>' +
       '<p>' + c.bio + '</p>';
     detail.hidden = false;
+    // Glossary shows only the characters in the highlighted relationships.
+    glossaryEntries.forEach(function (p) {
+      p.hidden = !lit[p.getAttribute('data-char')];
+    });
   }
 
   var wideLayout = window.matchMedia('(min-width: 1100px)');
