@@ -34,13 +34,16 @@
     padding: 64px 20px 96px;
   }
 
-  /* Wide screens: essay left, sticky map + glossary right */
-  @media (min-width: 1100px) {
+  /* Wide screens: essay left, sticky map + glossary right.
+     Breakpoint is deliberately low (920px) so the sidebar survives
+     browser zoom — zooming shrinks the CSS-pixel viewport, and at
+     1100px the layout collapsed to single-column at ~150% zoom. */
+  @media (min-width: 920px) {
     .page {
       display: grid;
       max-width: 1220px;
-      grid-template-columns: minmax(0, 680px) 430px;
-      gap: 60px;
+      grid-template-columns: minmax(0, 680px) minmax(300px, 430px);
+      gap: clamp(28px, 4vw, 60px);
       /* No align-items: start — the sidebar column must stretch to full
          row height or position: sticky inside it has no room to travel. */
     }
@@ -119,6 +122,69 @@
     outline: 1px dashed var(--clay);
     outline-offset: 2px;
     border-radius: 2px;
+  }
+
+  /* Quizzes */
+  .quiz {
+    margin: 2em 0;
+    padding: 16px 18px 14px;
+    background: var(--surface);
+    border: 1px solid var(--faint);
+    border-left: 3px solid var(--clay);
+    border-radius: 8px;
+    font-family: var(--sans);
+  }
+  .quiz-kicker {
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--clay);
+    margin-bottom: 8px;
+  }
+  .quiz-q {
+    font-family: var(--serif);
+    font-size: 17px;
+    line-height: 1.45;
+    margin-bottom: 12px;
+  }
+  .quiz-opt {
+    display: block;
+    width: 100%;
+    text-align: left;
+    font-family: var(--sans);
+    font-size: 14px;
+    line-height: 1.45;
+    color: var(--text);
+    background: #2a221b;
+    border: 1px solid var(--faint);
+    border-radius: 6px;
+    padding: 9px 12px;
+    margin-bottom: 8px;
+    cursor: pointer;
+  }
+  .quiz-opt:hover { border-color: var(--clay); }
+  .quiz-opt:focus-visible {
+    outline: 1px dashed var(--clay);
+    outline-offset: 2px;
+  }
+  .quiz.answered .quiz-opt { cursor: default; opacity: 0.5; }
+  .quiz.answered .quiz-opt.right {
+    opacity: 1;
+    border-color: var(--clay);
+    background: #32271d;
+  }
+  .quiz.answered .quiz-opt.right::before { content: "\2713\00a0\00a0"; color: var(--clay); }
+  .quiz.answered .quiz-opt.wrong-pick {
+    opacity: 1;
+    border-style: dashed;
+  }
+  .quiz.answered .quiz-opt.wrong-pick::before { content: "\2717\00a0\00a0"; color: var(--muted); }
+  .quiz-why {
+    font-size: 14px;
+    color: var(--muted);
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid var(--faint);
   }
 
   /* Tooltip */
@@ -325,7 +391,7 @@
 
 <header>
   <div class="kicker">The Iliad, retold</div>
-  <h1>The Anger of Achilles</h1>
+  <h1>Book 1</h1>
   <p class="subtitle">Book One, after Samuel Butler&rsquo;s translation &mdash; the plague, the quarrel, and a favor called in on Olympus.</p>
 </header>
 
@@ -341,11 +407,33 @@
 
 <p>Then <span class="char" data-char="chryseis" tabindex="0" role="button">Chryseis</span>&rsquo;s father shows up. His name is <span class="char" data-char="chryses" tabindex="0" role="button">Chryses</span>, and he&rsquo;s a priest of <span class="char" data-char="apollo" tabindex="0" role="button">Apollo</span>. He does everything right: he brings a big ransom, he&rsquo;s polite, he invokes the gods, he wishes the Greeks victory. The whole army says take the deal. <span class="char" data-char="agamemnon" tabindex="0" role="button">Agamemnon</span> says no, insults the old man, and threatens to hurt him if he ever comes back. This is the first bad decision in western literature, and like most bad decisions it&rsquo;s about status, not money. Accepting the ransom would look like backing down.</p>
 
+<div class="quiz" data-answer="b">
+  <div class="quiz-kicker">Pause &mdash; check yourself</div>
+  <p class="quiz-q">Agamemnon turns down a generous ransom the whole army wants him to take. What is he actually protecting?</p>
+  <div class="quiz-opts">
+    <button type="button" class="quiz-opt" data-opt="a">His finances &mdash; the ransom is less than the girl is worth</button>
+    <button type="button" class="quiz-opt" data-opt="b">His status &mdash; taking the deal would look like backing down</button>
+    <button type="button" class="quiz-opt" data-opt="c">The army's safety &mdash; releasing captives sets a bad precedent</button>
+  </div>
+  <p class="quiz-why" hidden>Status. The ransom is generous and everyone tells him so. He refuses because a leader who yields in public feels smaller &mdash; and people wreck real interests to avoid feeling smaller. Watch him do it again, at higher stakes, in a few paragraphs.</p>
+</div>
+
 <p><span class="char" data-char="chryses" tabindex="0" role="button">Chryses</span> walks off along the shore and prays. And here&rsquo;s the thing about insulting a priest: he has an escalation path. <span class="char" data-char="apollo" tabindex="0" role="button">Apollo</span> hears him and comes down from Olympus &ldquo;with a face as dark as night,&rdquo; and starts shooting plague arrows into the camp. First the mules and the dogs &mdash; a detail so specific it has to be observed &mdash; then the men. For nine days the funeral pyres burn.</p>
 
 <p>On the tenth day <span class="char" data-char="achilles" tabindex="0" role="button">Achilles</span> calls an assembly. Notice who&rsquo;s doing it: not <span class="char" data-char="agamemnon" tabindex="0" role="button">Agamemnon</span>, whose actual job this is. (<span class="char" data-char="hera" tabindex="0" role="button">Hera</span> nudged <span class="char" data-char="achilles" tabindex="0" role="button">Achilles</span> into it; the gods in this poem are constantly reaching down to press buttons.) He proposes the obvious: ask a prophet why <span class="char" data-char="apollo" tabindex="0" role="button">Apollo</span> is angry.</p>
 
 <p>They have one. <span class="char" data-char="calchas" tabindex="0" role="button">Calchas</span>, the seer who guided the fleet to Troy in the first place. What he says next is one of my favorite moments in the book, because it&rsquo;s so precisely observed. He says, roughly: I know the answer, but it&rsquo;s going to offend a powerful man, and a king&rsquo;s grudge outlives a commoner&rsquo;s complaint &mdash; he&rsquo;ll swallow his anger today and collect later. Swear you&rsquo;ll protect me first. <span class="char" data-char="calchas" tabindex="0" role="button">Calchas</span> may or may not see the future, but he has a perfect model of organizational politics. Prophets without one don&rsquo;t live to become old prophets.</p>
+
+<div class="quiz" data-answer="c">
+  <div class="quiz-kicker">Pause &mdash; check yourself</div>
+  <p class="quiz-q">Calchas knows the answer but won&rsquo;t speak until Achilles swears to protect him. What has he understood about power?</p>
+  <div class="quiz-opts">
+    <button type="button" class="quiz-opt" data-opt="a">Prophecy only works when the prophet feels safe</button>
+    <button type="button" class="quiz-opt" data-opt="b">Achilles is the real authority in the camp, not Agamemnon</button>
+    <button type="button" class="quiz-opt" data-opt="c">A king can swallow anger today and take revenge later &mdash; truth-tellers need cover that outlasts the moment</button>
+  </div>
+  <p class="quiz-why" hidden>The danger isn&rsquo;t the king&rsquo;s reaction now, in front of everyone. It&rsquo;s the grudge he nurses afterward, when no one is watching. Anyone who has delivered bad news to a boss knows exactly what Calchas is negotiating for.</p>
+</div>
 
 <p><span class="char" data-char="achilles" tabindex="0" role="button">Achilles</span> guarantees his safety &mdash; even, he adds pointedly, if the guilty man is <span class="char" data-char="agamemnon" tabindex="0" role="button">Agamemnon</span>. So <span class="char" data-char="calchas" tabindex="0" role="button">Calchas</span> says it: the plague is <span class="char" data-char="agamemnon" tabindex="0" role="button">Agamemnon</span>&rsquo;s fault. Return the girl, no ransom, throw in a shipload of sacrifices, and <span class="char" data-char="apollo" tabindex="0" role="button">Apollo</span> relents.</p>
 
@@ -361,6 +449,17 @@
 
 <p>What happens next is my favorite passage in the book. <span class="char" data-char="achilles" tabindex="0" role="button">Achilles</span>&rsquo;s hand is on his sword hilt, and Homer tells us he&rsquo;s genuinely undecided: kill the king, or swallow it? At that exact instant <span class="char" data-char="athena" tabindex="0" role="button">Athena</span> &mdash; sent by <span class="char" data-char="hera" tabindex="0" role="button">Hera</span>, who likes them both &mdash; grabs him by the hair from behind. Only he can see her. And she doesn&rsquo;t tell him murder is wrong. She makes him an offer: hold off, and you&rsquo;ll be repaid three times over for this insult. <span class="char" data-char="achilles" tabindex="0" role="button">Achilles</span> gives the most Greek answer imaginable &mdash; when the gods ask, a sensible man complies, &ldquo;for the gods hear the prayers of him who obeys them&rdquo; &mdash; and slides the sword back in.</p>
 
+<div class="quiz" data-answer="b">
+  <div class="quiz-kicker">Pause &mdash; check yourself</div>
+  <p class="quiz-q">Athena stops Achilles mid-draw. How?</p>
+  <div class="quiz-opts">
+    <button type="button" class="quiz-opt" data-opt="a">She tells him killing a king is morally wrong</button>
+    <button type="button" class="quiz-opt" data-opt="b">She makes him a better offer &mdash; hold off and be repaid threefold</button>
+    <button type="button" class="quiz-opt" data-opt="c">She physically overpowers him until the rage passes</button>
+  </div>
+  <p class="quiz-why" hidden>No sermon, no force &mdash; a deal. Homer&rsquo;s gods don&rsquo;t appeal to conscience; they appeal to interest. Restraint here isn&rsquo;t virtue conquering rage. It&rsquo;s a man with a long grievance calculating that patience pays better. That&rsquo;s a darker, and more honest, picture of self-control.</p>
+</div>
+
 <p>Then, since <span class="char" data-char="athena" tabindex="0" role="button">Athena</span> said insults were still allowed, he insults: wine-bibber, face of a dog, heart of a deer, a king who devours his own people because they&rsquo;re too feeble to stop him. He throws the speaker&rsquo;s sceptre on the ground and swears an oath on it: a day is coming when you&rsquo;ll miss me &mdash; when Hector is cutting your men down and you can&rsquo;t stop him &mdash; and you&rsquo;ll tear your heart out for having insulted the best man you had.</p>
 
 <p>Old <span class="char" data-char="nestor" tabindex="0" role="button">Nestor</span> gets up &mdash; king of Pylos, ruler of three generations of men, veteran, he assures everyone, of wars beside heroes greater than either of these two. His advice is genuinely wise: <span class="char" data-char="agamemnon" tabindex="0" role="button">Agamemnon</span>, don&rsquo;t take the girl. <span class="char" data-char="achilles" tabindex="0" role="button">Achilles</span>, don&rsquo;t fight the king. Each of you is strong in a different currency &mdash; you have a goddess for a mother, he has more people under him. It changes nothing. When both sides of an argument are defending status, being right isn&rsquo;t a resource either one can spend.</p>
@@ -373,6 +472,17 @@
 
 <p>Read that again, because it&rsquo;s easy to slide past: the best soldier in the Greek army asks heaven to make his own side lose. That&rsquo;s how completely honor outranks team in this world. <span class="char" data-char="thetis" tabindex="0" role="button">Thetis</span> grieves over him &mdash; you were doomed to a short life, and now it will be a bitter one too &mdash; but she agrees. There&rsquo;s a twelve-day delay, because <span class="char" data-char="zeus" tabindex="0" role="button">Zeus</span> is off feasting with the Ethiopians. Even divine intervention has scheduling constraints.</p>
 
+<div class="quiz" data-answer="a">
+  <div class="quiz-kicker">Pause &mdash; check yourself</div>
+  <p class="quiz-q">Achilles asks Zeus to let his own side lose. What does that reveal about the world he lives in?</p>
+  <div class="quiz-opts">
+    <button type="button" class="quiz-opt" data-opt="a">Personal honor outranks the team &mdash; a man&rsquo;s worth is public recognition, and without it victory means nothing</button>
+    <button type="button" class="quiz-opt" data-opt="b">He has secretly sympathized with Troy all along</button>
+    <button type="button" class="quiz-opt" data-opt="c">He believes the war is unwinnable and wants it over quickly</button>
+  </div>
+  <p class="quiz-why" hidden>In an honor culture your worth isn&rsquo;t what you privately are &mdash; it&rsquo;s what others publicly acknowledge. Strip the recognition and the self goes with it. So Achilles needs the Greeks to bleed, not because he hates them, but because their losses are the only currency that can restore what Agamemnon took. Honor accounting, carried to its logical, awful end.</p>
+</div>
+
 <p>Meanwhile the machinery of appeasement runs, and runs smoothly. <span class="char" data-char="odysseus" tabindex="0" role="button">Odysseus</span> sails to Chryse and delivers <span class="char" data-char="chryseis" tabindex="0" role="button">Chryseis</span> to her father. <span class="char" data-char="chryses" tabindex="0" role="button">Chryses</span>, who prayed the plague in, prays it out again &mdash; same god, same formula, sign flipped. Sacrifices, roasted meat, wine, a day of hymns; <span class="char" data-char="apollo" tabindex="0" role="button">Apollo</span> is pleased and sends them a fair wind home. The whole plague subplot resolves in about a page, and I think that&rsquo;s the point. The god&rsquo;s quarrel was cheap to fix. The men&rsquo;s quarrel will cost the rest of the poem.</p>
 
 <p>Twelve days later <span class="char" data-char="thetis" tabindex="0" role="button">Thetis</span> surfaces at dawn, climbs Olympus, and finds <span class="char" data-char="zeus" tabindex="0" role="button">Zeus</span> sitting alone on the top ridge. She takes his knees with one hand and his chin with the other &mdash; the full formal supplication, no shortcuts &mdash; and asks: honor my son. Let the Greeks lose until they pay him what he&rsquo;s worth. <span class="char" data-char="zeus" tabindex="0" role="button">Zeus</span> sits silent. She grips harder: nod yes, or refuse me to my face. And his answer is wonderful, because it isn&rsquo;t about geopolitics at all: this is going to be trouble, because <span class="char" data-char="hera" tabindex="0" role="button">Hera</span> will find out, and she already needles me in front of the other gods. The king of the universe agrees to tilt a world war, and his stated concern is that his wife is going to give him a hard time at dinner. Then he nods, and all Olympus shakes. The nod is the one thing in the cosmos that can&rsquo;t be taken back.</p>
@@ -382,6 +492,17 @@
 <p>What rescues the evening is <span class="char" data-char="hephaestus" tabindex="0" role="button">Hephaestus</span>, the lame smith god, <span class="char" data-char="hera" tabindex="0" role="button">Hera</span>&rsquo;s son. He plays the child of the quarreling household &mdash; a role he has clearly played before. Don&rsquo;t wreck dinner over a pack of mortals. Mother, make peace; there&rsquo;s no standing against him. Last time I took your side he threw me off Olympus, and I fell for a whole day before I hit the ground on Lemnos. He tells this &mdash; his own maiming &mdash; as a joke, and pours the nectar, bustling and limping around the hall until the gods burst out laughing. It works. <span class="char" data-char="apollo" tabindex="0" role="button">Apollo</span> plays the lyre, the Muses sing, and at sundown the immortals go home to bed, <span class="char" data-char="zeus" tabindex="0" role="button">Zeus</span> with <span class="char" data-char="hera" tabindex="0" role="button">Hera</span> beside him, as if nothing were wrong.</p>
 
 <p>That&rsquo;s the joke, and the horror, of ending Book One in heaven. The gods have exactly the same quarrels as the mortals &mdash; status, favorites, who must yield to whom &mdash; but theirs dissolve into laughter by bedtime, because nothing is ever really at stake for beings who can&rsquo;t die. That same evening, on the beach below, <span class="char" data-char="achilles" tabindex="0" role="button">Achilles</span> sits by his ships, out of the war, &ldquo;gnawing at his own heart.&rdquo; His quarrel doesn&rsquo;t dissolve. It compounds. And fifteen thousand lines of consequences are on their way.</p>
+
+<div class="quiz" data-answer="c">
+  <div class="quiz-kicker">Last one</div>
+  <p class="quiz-q">The gods&rsquo; quarrel ends in laughter by bedtime. Achilles&rsquo; quarrel will consume the whole poem. Why the difference?</p>
+  <div class="quiz-opts">
+    <button type="button" class="quiz-opt" data-opt="a">The gods are wiser and better at forgiving</button>
+    <button type="button" class="quiz-opt" data-opt="b">Hephaestus is a better mediator than Nestor</button>
+    <button type="button" class="quiz-opt" data-opt="c">Nothing is ever at stake for immortals &mdash; mortality is what gives human anger its weight</button>
+  </div>
+  <p class="quiz-why" hidden>The gods have the same status games, the same jealousies, even the same threats of violence &mdash; and none of it matters, because no god can lose anything permanently. Achilles has one short life, and every day of dishonor spends it. That asymmetry is the point of ending Book One in heaven: the same quarrel, weightless above, fatal below. Being mortal is what makes anything matter at all.</p>
+</div>
 
 </article>
 
@@ -853,7 +974,7 @@
     });
   }
 
-  var wideLayout = window.matchMedia('(min-width: 1100px)');
+  var wideLayout = window.matchMedia('(min-width: 920px)');
   var sideInner = document.querySelector('.side-inner');
 
   function scrollToMap() {
@@ -968,6 +1089,27 @@
   });
 
   chipClear.addEventListener('click', clearHighlight);
+
+  /* ---------- Quizzes ---------- */
+
+  document.querySelectorAll('.quiz').forEach(function (quiz) {
+    var answer = quiz.getAttribute('data-answer');
+    var opts = quiz.querySelectorAll('.quiz-opt');
+    opts.forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        if (quiz.classList.contains('answered')) return;
+        quiz.classList.add('answered');
+        if (btn.getAttribute('data-opt') !== answer) {
+          btn.classList.add('wrong-pick');
+        }
+        quiz.querySelector('[data-opt="' + answer + '"]').classList.add('right');
+        opts.forEach(function (b) { b.setAttribute('aria-disabled', 'true'); });
+        var why = quiz.querySelector('.quiz-why');
+        why.hidden = false;
+        why.setAttribute('role', 'status');
+      });
+    });
+  });
 
   /* ---------- Global ---------- */
 
