@@ -1,0 +1,1108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Breaking the Truce — Iliad, Book Four</title>
+<style>
+  :root {
+    --bg: #16110c;
+    --surface: #221c17;
+    --text: #e7dfd3;
+    --muted: #a89880;
+    --faint: #3b3229;
+    --clay: #c0714f;
+    --serif: Georgia, 'Times New Roman', serif;
+    --sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { background: var(--bg); }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--serif);
+    line-height: 1.68;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .page {
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 64px 20px 96px;
+  }
+
+  /* Wide screens: essay left, sticky map + glossary right.
+     Breakpoint is deliberately low (920px) so the sidebar survives
+     browser zoom — zooming shrinks the CSS-pixel viewport, and at
+     1100px the layout collapsed to single-column at ~150% zoom. */
+  @media (min-width: 920px) {
+    .page {
+      display: grid;
+      max-width: 1220px;
+      grid-template-columns: minmax(0, 680px) minmax(300px, 430px);
+      gap: clamp(28px, 4vw, 60px);
+      /* No align-items: start — the sidebar column must stretch to full
+         row height or position: sticky inside it has no room to travel. */
+    }
+    .side-col { min-width: 0; }
+    .side-inner {
+      position: sticky;
+      top: 20px;
+      max-height: calc(100vh - 40px);
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      padding-right: 6px;
+      scrollbar-width: thin;
+      scrollbar-color: var(--faint) transparent;
+    }
+    .side-inner #map-section { order: -1; margin-top: 0; }
+    .side-inner h2 { font-size: 17px; margin: 24px 0 10px; }
+    .side-inner .map-note { font-size: 12px; }
+    .side-inner .person { padding: 10px 12px; margin-bottom: 8px; }
+    .side-inner .person h3 { font-size: 15px; }
+    .side-inner .person .role { font-size: 10.5px; margin-bottom: 3px; }
+    .side-inner .person p:last-child { font-size: 13.5px; }
+  }
+
+  header { margin-bottom: 40px; }
+
+  .book-nav {
+    font-family: var(--sans);
+    font-size: 13px;
+    margin-bottom: 20px;
+  }
+  .book-nav a {
+    color: var(--muted);
+    text-decoration: none;
+  }
+  .book-nav a:hover { color: var(--clay); }
+
+  .kicker {
+    font-family: var(--sans);
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--clay);
+    margin-bottom: 14px;
+  }
+
+  h1 {
+    font-size: 40px;
+    line-height: 1.15;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    margin-bottom: 12px;
+  }
+
+  .subtitle {
+    font-size: 19px;
+    color: var(--muted);
+    font-style: italic;
+  }
+
+  hr.rule {
+    border: none;
+    border-top: 1px solid var(--faint);
+    margin: 36px 0;
+  }
+
+  article { font-size: 19px; }
+  article p { margin-bottom: 1.35em; }
+  article em { font-style: italic; }
+
+  h2 {
+    font-size: 26px;
+    margin: 48px 0 18px;
+    letter-spacing: -0.01em;
+  }
+
+  /* Character references in the essay */
+  .char {
+    cursor: pointer;
+    text-decoration: underline dotted;
+    text-decoration-color: color-mix(in srgb, var(--clay) 60%, transparent);
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+  }
+  .char:hover { text-decoration-color: var(--clay); }
+  .char:focus-visible {
+    outline: 1px dashed var(--clay);
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+
+  /* Quizzes */
+  .quiz {
+    margin: 2em 0;
+    padding: 16px 18px 14px;
+    background: var(--surface);
+    border: 1px solid var(--faint);
+    border-left: 3px solid var(--clay);
+    border-radius: 8px;
+    font-family: var(--sans);
+  }
+  .quiz-kicker {
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--clay);
+    margin-bottom: 8px;
+  }
+  .quiz-q {
+    font-family: var(--serif);
+    font-size: 17px;
+    line-height: 1.45;
+    margin-bottom: 12px;
+  }
+  .quiz-opt {
+    display: block;
+    width: 100%;
+    text-align: left;
+    font-family: var(--sans);
+    font-size: 14px;
+    line-height: 1.45;
+    color: var(--text);
+    background: #2a221b;
+    border: 1px solid var(--faint);
+    border-radius: 6px;
+    padding: 9px 12px;
+    margin-bottom: 8px;
+    cursor: pointer;
+  }
+  .quiz-opt:hover { border-color: var(--clay); }
+  .quiz-opt:focus-visible {
+    outline: 1px dashed var(--clay);
+    outline-offset: 2px;
+  }
+  .quiz.answered .quiz-opt { cursor: default; opacity: 0.5; }
+  .quiz.answered .quiz-opt.right {
+    opacity: 1;
+    border-color: var(--clay);
+    background: #32271d;
+  }
+  .quiz.answered .quiz-opt.right::before { content: "\2713\00a0\00a0"; color: var(--clay); }
+  .quiz.answered .quiz-opt.wrong-pick {
+    opacity: 1;
+    border-style: dashed;
+  }
+  .quiz.answered .quiz-opt.wrong-pick::before { content: "\2717\00a0\00a0"; color: var(--muted); }
+  .quiz-why {
+    font-size: 14px;
+    color: var(--muted);
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid var(--faint);
+  }
+
+  /* Tooltip */
+  #char-tooltip {
+    position: fixed;
+    z-index: 50;
+    max-width: min(320px, calc(100vw - 24px));
+    background: #221c17;
+    border: 1px solid var(--faint);
+    border-radius: 8px;
+    padding: 12px 14px;
+    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.55);
+    font-family: var(--sans);
+    font-size: 13.5px;
+    line-height: 1.5;
+    color: var(--text);
+    pointer-events: none;
+  }
+  #char-tooltip .tip-name {
+    font-family: var(--serif);
+    font-size: 17px;
+    font-weight: 700;
+    margin-bottom: 2px;
+  }
+  #char-tooltip .tip-role {
+    color: var(--clay);
+    font-size: 12px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  #char-tooltip .tip-bio { color: var(--muted); }
+  #char-tooltip .tip-hint {
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid var(--faint);
+    font-size: 12px;
+    color: var(--clay);
+  }
+
+  /* Decoder table */
+  table.decoder {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: var(--sans);
+    font-size: 15px;
+    margin: 8px 0 16px;
+  }
+  table.decoder th {
+    text-align: left;
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--faint);
+  }
+  table.decoder td {
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--faint);
+  }
+  table.decoder td:first-child { color: var(--clay); }
+
+  /* Glossary */
+  .person {
+    padding: 16px 18px;
+    margin-bottom: 12px;
+    background: var(--surface);
+    border: 1px solid var(--faint);
+    border-radius: 8px;
+  }
+  .person h3 { font-size: 18px; margin-bottom: 2px; }
+  .person .role {
+    font-family: var(--sans);
+    font-size: 12px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--clay);
+    margin-bottom: 6px;
+  }
+  .person p:last-child {
+    font-size: 16px;
+    color: var(--muted);
+    margin: 0;
+  }
+  .person.mappable { cursor: pointer; }
+  .person.mappable:hover { border-color: var(--clay); }
+  .person.mappable:focus-visible {
+    outline: 1px dashed var(--clay);
+    outline-offset: 2px;
+  }
+
+  /* Map */
+  #map-section { margin-top: 48px; }
+  .map-note {
+    font-family: var(--sans);
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 12px;
+  }
+  #map-chip {
+    display: none;
+    align-items: center;
+    gap: 10px;
+    font-family: var(--sans);
+    font-size: 13px;
+    background: var(--surface);
+    border: 1px solid var(--clay);
+    border-radius: 999px;
+    padding: 6px 8px 6px 14px;
+    margin-bottom: 12px;
+  }
+  #map-chip.on { display: inline-flex; }
+  #map-chip button {
+    font-family: var(--sans);
+    font-size: 12px;
+    color: var(--bg);
+    background: var(--clay);
+    border: none;
+    border-radius: 999px;
+    padding: 3px 10px;
+    cursor: pointer;
+  }
+  #map-chip button:focus-visible {
+    outline: 1px dashed var(--text);
+    outline-offset: 2px;
+  }
+
+  #relmap {
+    width: 100%;
+    height: auto;
+    display: block;
+    background: var(--surface);
+    border: 1px solid var(--faint);
+    border-radius: 10px;
+  }
+  #relmap .node rect {
+    fill: #2a221b;
+    stroke: var(--faint);
+    stroke-width: 1;
+  }
+  #relmap .node.divine rect { fill: #2e241a; }
+  #relmap .node text {
+    fill: var(--text);
+    font-family: var(--sans);
+    font-size: 14px;
+    letter-spacing: 0.04em;
+  }
+  #relmap .node { cursor: pointer; }
+  #relmap .node:hover rect { stroke: var(--clay); }
+  #relmap .node:focus { outline: none; }
+  #relmap .node:focus-visible rect { stroke: var(--clay); stroke-dasharray: 3 3; }
+  #relmap .edge {
+    stroke: #5c4f41;
+    stroke-width: 1.5;
+    fill: none;
+  }
+  #relmap .edge-label {
+    fill: #91816c;
+    font-family: var(--sans);
+    font-size: 11px;
+    letter-spacing: 0.03em;
+  }
+  #relmap .edge-label.loud {
+    fill: var(--clay);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+  }
+  #relmap .band-label {
+    fill: #6b5c4a;
+    font-family: var(--sans);
+    font-size: 10px;
+    letter-spacing: 0.22em;
+  }
+
+  #relmap .node, #relmap .edge, #relmap .edge-label {
+    transition: opacity 0.2s ease;
+  }
+  #relmap.dimmed .node,
+  #relmap.dimmed .edge,
+  #relmap.dimmed .edge-label { opacity: 0.15; }
+  #relmap.dimmed .lit { opacity: 1; }
+  #relmap .node.sel rect {
+    stroke: var(--clay);
+    stroke-width: 2.5;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    #relmap .node, #relmap .edge, #relmap .edge-label { transition: none; }
+  }
+
+  @media (max-width: 480px) {
+    h1 { font-size: 32px; }
+    article { font-size: 17.5px; }
+    .page { padding-top: 44px; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+<div class="main-col">
+
+<header>
+  <nav class="book-nav"><a href="book_3.html">&larr; Book 3</a></nav>
+  <div class="kicker">The Iliad, retold</div>
+  <h1>Book 4</h1>
+  <p class="subtitle">Book Four, after Samuel Butler&rsquo;s translation &mdash; the gods trade cities over drinks, one arrow ends the peace, and the dying start getting names.</p>
+</header>
+
+<hr class="rule">
+
+<article>
+
+<p>Book Three ended with the war settled on the ground. Book Four opens where wars are actually decided: Olympus, golden floor, Hebe pouring nectar, the gods looking down at Troy the way you&rsquo;d look at a screen. <span class="char" data-char="zeus" tabindex="0" role="button">Zeus</span> starts the conversation, and Homer tells us his intent outright: he spoke &ldquo;so as to provoke&rdquo; <span class="char" data-char="hera" tabindex="0" role="button">Hera</span>. <span class="char" data-char="menelaus" tabindex="0" role="button">Menelaus</span>, he observes, has two goddesses in his corner &mdash; and they sit up here watching, while <span class="char" data-char="aphrodite" tabindex="0" role="button">Aphrodite</span> actually shows up and saves her man. And, by the way: the victory was <span class="char" data-char="menelaus" tabindex="0" role="button">Menelaus</span>&rsquo;s, fair and square. So &mdash; shall we call it? <span class="char" data-char="helen" tabindex="0" role="button">Helen</span> goes home, and <span class="char" data-char="priam" tabindex="0" role="button">Priam</span>&rsquo;s city stands.</p>
+
+<p><span class="char" data-char="athena" tabindex="0" role="button">Athena</span> fumes in silence. <span class="char" data-char="hera" tabindex="0" role="button">Hera</span> can&rsquo;t: is my labor to go for nothing &mdash; the sweat I sweated, my tired horses, mustering armies against <span class="char" data-char="priam" tabindex="0" role="button">Priam</span> and his children? <span class="char" data-char="zeus" tabindex="0" role="button">Zeus</span>&rsquo;s reply starts as genuine bewilderment: what have they ever <em>done</em> to you? Must you get inside the walls and eat <span class="char" data-char="priam" tabindex="0" role="button">Priam</span> raw, his sons and all? And then he folds &mdash; but files a receipt: have your way, so this doesn&rsquo;t become a quarrel between us. But someday I&rsquo;ll want a city that <em>you</em> love, and when I do, you will not stop me. Because understand what you&rsquo;re asking: of every city under the sun and stars, none honored me like Troy. My altar there never lacked its feast. Perfect piety &mdash; and he&rsquo;s signing it away.</p>
+
+<p><span class="char" data-char="hera" tabindex="0" role="button">Hera</span>&rsquo;s counter-offer is the coldest paragraph in the epic. Take my three favorites, she says &mdash; Argos, Sparta, Mycenae. Sack them whenever they displease you. I won&rsquo;t defend them and I won&rsquo;t care. These are her own worshipping cities, hers the way Troy is <span class="char" data-char="zeus" tabindex="0" role="button">Zeus</span>&rsquo;s, and she puts them on the table like chips &mdash; generations of prayers marked down to the price of one grudge. Deal done, she moves straight to logistics: send <span class="char" data-char="athena" tabindex="0" role="button">Athena</span> down, and have her contrive that the <em>Trojans</em> are the first to break their oaths.</p>
+
+<div class="quiz" data-answer="a">
+  <div class="quiz-kicker">Pause &mdash; check yourself</div>
+  <p class="quiz-q">Hera offers Zeus three of her own favorite cities &mdash; Argos, Sparta, Mycenae &mdash; to sack whenever he pleases, as the price of destroying Troy. What has just been established?</p>
+  <div class="quiz-opts">
+    <button type="button" class="quiz-opt" data-opt="a">Worship buys nothing &mdash; cities are chips, and a god&rsquo;s grudge outbids generations of burnt offerings</button>
+    <button type="button" class="quiz-opt" data-opt="b">A bluff &mdash; she names cities Zeus would never actually touch, knowing the offer can&rsquo;t be collected</button>
+    <button type="button" class="quiz-opt" data-opt="c">A fair exchange &mdash; Troy wronged her at Paris&rsquo;s judgment, so compensation has to come from somewhere</button>
+  </div>
+  <p class="quiz-why" hidden>Zeus says it himself: no city under the stars honored him like Troy &mdash; his altar never lacked its feast. Perfect piety, traded anyway; and Hera prices her own worshippers without a flinch. The bluff reading fails because Zeus treats the offer as binding &mdash; that&rsquo;s what his &ldquo;someday I&rsquo;ll want a city of yours&rdquo; receipt is for. The theology here is exact and bleak: the gods&rsquo; economy runs on their politics, not your devotion.</p>
+</div>
+
+<p>Notice the actual instruction: not &ldquo;restart the war&rdquo; but make the Trojans break the truce <em>first</em>. First is everything. If the fighting merely resumes, it&rsquo;s the gods&rsquo; mess. If Troy shoots first, the Greeks get a righteous cause, the oaths fight on their side, and every man who swore over the wine that morning becomes a stakeholder in Troy&rsquo;s punishment. This is blame engineering, ordered at the executive level. <span class="char" data-char="athena" tabindex="0" role="button">Athena</span> &mdash; &ldquo;already eager,&rdquo; Homer notes &mdash; drops out of the sky like a meteor trailing fire, and both armies look up and read the same omen both ways: either war again, or peace. A sign that supports any conclusion is not information. It&rsquo;s a mirror.</p>
+
+<p>She finds her man: <span class="char" data-char="pandarus" tabindex="0" role="button">Pandarus</span>, a captain with a famous bow. Wearing a comrade&rsquo;s face, she makes the pitch, and it&rsquo;s engineered to the target: dare to shoot <span class="char" data-char="menelaus" tabindex="0" role="button">Menelaus</span> now, and you&rsquo;ll win glory before all Troy &mdash; and gifts, rich ones, from <span class="char" data-char="paris" tabindex="0" role="button">Paris</span>, who&rsquo;d pay anything to watch his rival climb onto a funeral pyre. Take aim; vow a hecatomb of lambs to <span class="char" data-char="apollo" tabindex="0" role="button">Apollo</span> for when you&rsquo;re home. Homer&rsquo;s verdict comes in four words: &ldquo;his fool&rsquo;s heart was persuaded.&rdquo;</p>
+
+<p>Then, before the treachery, the poem stops to admire the instrument &mdash; a bow built from the horns of a wild ibex <span class="char" data-char="pandarus" tabindex="0" role="button">Pandarus</span> stalked and shot himself, sixteen palms of horn, worked smooth by a craftsman, tipped with gold. Homer gives the weapon a biography before the crime the way he&rsquo;ll soon give the dead one after. <span class="char" data-char="pandarus" tabindex="0" role="button">Pandarus</span> shoots from behind a wall of his comrades&rsquo; shields &mdash; treachery, with logistics support &mdash; and the string sings, and the arrow, Homer says, flies <em>gladly</em>.</p>
+
+<div class="quiz" data-answer="c">
+  <div class="quiz-kicker">Pause &mdash; check yourself</div>
+  <p class="quiz-q">Athena doesn&rsquo;t seize Pandarus&rsquo;s hands and force the shot. What&rsquo;s her method?</p>
+  <div class="quiz-opts">
+    <button type="button" class="quiz-opt" data-opt="a">Authority &mdash; disguised as a comrade, she delivers what sounds like an order from his own side</button>
+    <button type="button" class="quiz-opt" data-opt="b">Piety &mdash; she wraps the shot in a vow to Apollo, so the treachery feels like an act of worship</button>
+    <button type="button" class="quiz-opt" data-opt="c">Opportunity &mdash; she shows him a door marked glory and gifts, fitted to his vanity, and lets him walk through</button>
+  </div>
+  <p class="quiz-why" hidden>The disguise and the vow are both really there &mdash; that&rsquo;s what makes them tempting answers &mdash; but neither is the engine. Nothing about the pitch is a command; it&rsquo;s a payoff schedule: fame before all Troy, Paris&rsquo;s gratitude. Homer&rsquo;s &ldquo;fool&rsquo;s heart was persuaded&rdquo; puts the agency in Pandarus, where it has to stay: the entire assignment was to make the blame Trojan, and blame only sticks to a man who chose. Gods in this poem rarely compel. They present the temptation you were already shaped to take.</p>
+</div>
+
+<p>Now watch <span class="char" data-char="athena" tabindex="0" role="button">Athena</span>&rsquo;s double game, because it&rsquo;s the whole chapter in one gesture. She talked the arrow into the air; now she deflects it &mdash; &ldquo;as a mother whisks a fly from her sleeping child.&rdquo; Homer&rsquo;s tenderest simile, spent on the goddess who arranged the shot. She steers the point into the one spot on <span class="char" data-char="menelaus" tabindex="0" role="button">Menelaus</span> where belt buckle, cuirass, and mail overlap; it punches through all three and just breaks the skin. Blood runs down his thighs, and Homer reaches for a craftsman&rsquo;s image: purple dye laid on ivory. She needed a wound, not a corpse &mdash; enough blood to kill the peace, not enough to cost the Greeks a king. Precision-guided outrage.</p>
+
+<p><span class="char" data-char="agamemnon" tabindex="0" role="button">Agamemnon</span> sees the blood and comes apart &mdash; in two directions at once, and Homer refuses to sort them. He holds his brother&rsquo;s hand and groans: I&rsquo;ve been the death of you, pledging this covenant. Real grief, real guilt. And in the same unbroken speech, the other track: if you die, the army sails home, <span class="char" data-char="helen" tabindex="0" role="button">Helen</span> stays, your bones rot at Troy with the work unfinished &mdash; and some braggart Trojan will leap on your tomb and laugh: <em>so much for the vengeance of</em> <span class="char" data-char="agamemnon" tabindex="0" role="button">Agamemnon</span>. May the earth swallow me first. Brother-love and brand-management, fused in one sentence. <span class="char" data-char="menelaus" tabindex="0" role="button">Menelaus</span>, bleeding, is the calm one: relax &mdash; the belt caught it. The surgeon <span class="char" data-char="machaon" tabindex="0" role="button">Machaon</span> is fetched, draws the arrow, bending the barbs back, and dresses the wound with drugs from a recipe Chiron gave his father &mdash; battlefield medicine already three generations deep.</p>
+
+<div class="quiz" data-answer="b">
+  <div class="quiz-kicker">Pause &mdash; check yourself</div>
+  <p class="quiz-q">Holding his wounded brother&rsquo;s hand, Agamemnon grieves &mdash; and in the same speech imagines the army sailing home and a Trojan braggart dancing on Menelaus&rsquo;s tomb. What is Homer doing?</p>
+  <div class="quiz-opts">
+    <button type="button" class="quiz-opt" data-opt="a">Exposing him &mdash; the grief is performance, and the tomb fantasy shows where his heart actually lives</button>
+    <button type="button" class="quiz-opt" data-opt="b">Refusing to sort him &mdash; love and reputation-panic arrive fused, which is how motives actually come</button>
+    <button type="button" class="quiz-opt" data-opt="c">Foreshadowing &mdash; the speech quietly previews the ruinous homecoming that really does await Agamemnon</button>
+  </div>
+  <p class="quiz-why" hidden>The cynical reading fails on the physical details &mdash; the held hand, the sighs, the comrades moaning with him are real grief, not staging. But the optics-calculation is equally real, and Homer writes both in one breath without refereeing. That&rsquo;s his standard move with motive: Achilles&rsquo; honor and greed, Hera&rsquo;s justice and spite. People rarely know which of their reasons is load-bearing. (And yes &mdash; Agamemnon&rsquo;s homecoming is a catastrophe, which gives option c its shine. But this speech isn&rsquo;t built as prophecy; it&rsquo;s built as panic.)</p>
+</div>
+
+<p>The Trojans re-arm, and <span class="char" data-char="agamemnon" tabindex="0" role="button">Agamemnon</span> has his best chapter in the poem: the walking tour. He leaves the chariot behind &mdash; a commander on foot, so the men see him &mdash; and calibrates his approach to each captain like a man who&rsquo;s been studying his roster for nine years. To Idomeneus: perks &mdash; at my table your cup stands full when everyone else drinks by allowance; be the man you&rsquo;re proud to be. To the two Ajaxes: nothing at all &mdash; men like you need no orders; give me ten more and Troy falls today. To <span class="char" data-char="nestor" tabindex="0" role="button">Nestor</span>: respect &mdash; and <span class="char" data-char="nestor" tabindex="0" role="button">Nestor</span> earns it on the spot with the poem&rsquo;s first piece of formation design: chariots in front, solid infantry behind, and the cowards driven into the middle, &ldquo;that they might fight whether they would or no.&rdquo; Don&rsquo;t exhort the unwilling. Build a formation where unwillingness has no exit.</p>
+
+<p>Then the misfires, which are just as instructive. He needles <span class="char" data-char="odysseus" tabindex="0" role="button">Odysseus</span>: first man at my feasts, and here you stand waiting for others to start the fighting. <span class="char" data-char="odysseus" tabindex="0" role="button">Odysseus</span> goes off like a spring &mdash; what are you <em>talking</em> about? Watch the father of Telemachus in the front line; you&rsquo;re talking idly &mdash; and <span class="char" data-char="agamemnon" tabindex="0" role="button">Agamemnon</span> instantly smiles, retracts everything, no fault to find, we&rsquo;re of one mind, may the gods cancel whatever I just said. A commander who knows to the millimeter which of his subordinates he can afford to insult.</p>
+
+<p><span class="char" data-char="diomedes" tabindex="0" role="button">Diomedes</span> gets the full treatment: your father Tydeus once beat fifty ambushers nearly single-handed &mdash; best man of his generation, or so they say, I never met him &mdash; and his son talks better and fights worse. <span class="char" data-char="diomedes" tabindex="0" role="button">Diomedes</span> says nothing. His lieutenant Sthenelus takes the bait instead &mdash; we&rsquo;re <em>better</em> than our fathers; we actually took Thebes &mdash; and <span class="char" data-char="diomedes" tabindex="0" role="button">Diomedes</span> turns and silences his own defender: quiet, friend. It&rsquo;s no shame for <span class="char" data-char="agamemnon" tabindex="0" role="button">Agamemnon</span> to spur us on &mdash; his is the glory if we take the city, and his the shame if we lose it. Then he vaults off the chariot in a clang of bronze that Homer says would have frightened a brave man. He&rsquo;s the first person in four books the insult machine simply cannot reach.</p>
+
+<div class="quiz" data-answer="c">
+  <div class="quiz-kicker">Pause &mdash; check yourself</div>
+  <p class="quiz-q">Agamemnon goads Diomedes with his father&rsquo;s legend. Diomedes says nothing &mdash; and silences Sthenelus for talking back on his behalf. Why swallow it?</p>
+  <div class="quiz-opts">
+    <button type="button" class="quiz-opt" data-opt="a">Rank &mdash; he watched what the sceptre did to Thersites, and dissent is priced by the dissenter&rsquo;s status</button>
+    <button type="button" class="quiz-opt" data-opt="b">The record &mdash; Sthenelus&rsquo;s boast about Thebes is inflated, and Diomedes won&rsquo;t go to battle on a lie</button>
+    <button type="button" class="quiz-opt" data-opt="c">The system &mdash; a commander&rsquo;s job is to goad, and the outcome lands on the commander; answering is beneath the work</button>
+  </div>
+  <p class="quiz-why" hidden>Option a is the Book Two lesson, and it&rsquo;s the trap: Diomedes isn&rsquo;t afraid &mdash; he explains his reasoning aloud, calmly, on the spot. He has internalized the incentive structure so completely there&rsquo;s nothing left to resent: Agamemnon bears the glory or the shame, so Agamemnon gets to spur. Compare Achilles, who heard a milder provocation and reached for a sword. Professionalism, in any century, is mostly this &mdash; knowing which provocations are part of the machinery.</p>
+</div>
+
+<p>Then the armies close, and Homer gives the sound of each. The Greeks march in a silence so total he marvels at it &mdash; you&rsquo;d swear that enormous host had no tongues, discipline made audible. The Trojans are a din like thousands of ewes bleating for their lambs, a camp of many languages answering itself. Ares drives one side, <span class="char" data-char="athena" tabindex="0" role="button">Athena</span> the other, and with them the staff officers of every battle since: Panic, Rout, and Strife, whose head reaches heaven while her feet still walk the earth. Shields meet shields, and &ldquo;the earth ran red.&rdquo;</p>
+
+<p>And now the poem begins a practice it will keep for twenty books: every death gets a name, and an invoice. Echepolus, first man killed in the Iliad, takes a spear through the helmet. Elephenor is killed in the ribs as he stoops to drag off the body and strip the armor &mdash; cut down through the gap his own greed opened. Then Ajax kills Simoeisius, and Homer stops the battle to tell you who that was: his mother bore him on the banks of the river Simois, coming down from Ida where she&rsquo;d gone with her parents to see the flocks &mdash; that&rsquo;s why he carried the river&rsquo;s name &mdash; and &ldquo;he did not live to repay his parents for his rearing.&rdquo; He falls like a poplar felled by a wheelwright, left seasoning by the water to become the rim of someone&rsquo;s chariot wheel. A life, converted to material. Homer invented him thirty seconds ago, and you grieve him anyway.</p>
+
+<p>The killing chains outward. Antiphus throws at Ajax, misses, and kills Leucus &mdash; <span class="char" data-char="odysseus" tabindex="0" role="button">Odysseus</span>&rsquo;s friend. <span class="char" data-char="odysseus" tabindex="0" role="button">Odysseus</span>, furious, strides up the line and kills Democoon &mdash; a bastard son of <span class="char" data-char="priam" tabindex="0" role="button">Priam</span> who, the poem pauses to note, used to look after his father&rsquo;s mares at Abydos. Even the one-line dead get a job. The Trojan front gives ground, and <span class="char" data-char="apollo" tabindex="0" role="button">Apollo</span> himself shouts from the citadel the sharpest morale line of the war: press them &mdash; their skins are not stone, not iron &mdash; and <span class="char" data-char="achilles" tabindex="0" role="button">Achilles</span> <em>is not even fighting</em>. The most powerful man on the battlefield is two miles away, sitting by his ships, and both sides plan around him like weather. Near the close, Diores&rsquo; ankle is crushed by a jagged stone and Peirous spears him as he falls; Thoas kills Peirous in turn; and the two captains, Epean and Thracian, lie dead beside each other while their men fight over the bodies.</p>
+
+<p>Homer ends the book on a strange, pointed sentence: no man could have made light of that fighting &mdash; provided he could walk through it untouched, unwounded, with <span class="char" data-char="athena" tabindex="0" role="button">Athena</span> leading him by the hand and turning the spears aside. Which is, of course, a description of you. The reader is the man with divine protection, strolling the field, safe. The poet spends the whole book making battle magnificent and then, in one line, points at your seat. The truce is dead, the first names are in the ledger, and the machine the gods built this morning will now run for twenty books. Book Five belongs to <span class="char" data-char="diomedes" tabindex="0" role="button">Diomedes</span>.</p>
+
+<div class="quiz" data-answer="b">
+  <div class="quiz-kicker">Last one</div>
+  <p class="quiz-q">Simoeisius gets a riverbank birth, parents he&rsquo;ll never repay, and a poplar simile &mdash; thirty seconds after Homer invents him, ten seconds before Ajax kills him. Why do the dead get biographies?</p>
+  <div class="quiz-opts">
+    <button type="button" class="quiz-opt" data-opt="a">Convention &mdash; epic casualty lists carried names and origins so regional audiences could claim their heroes</button>
+    <button type="button" class="quiz-opt" data-opt="b">Pricing &mdash; each death is invoiced in a life, so you feel the full cost of what one spear-thrust deletes</button>
+    <button type="button" class="quiz-opt" data-opt="c">Contrast &mdash; the pathos of the small dead is what measures the glory of the great men who cut them down</button>
+  </div>
+  <p class="quiz-why" hidden>The biography exists to be destroyed: you meet the mother by the river precisely so the spear takes something you now hold. The poplar simile completes the accounting &mdash; a grown life felled and seasoned into material for someone else&rsquo;s vehicle. Option c is the respectable classroom reading, but it gets the direction backwards: the details are domestic, not heroic &mdash; flocks, parents, an unpaid debt of rearing &mdash; and they make the killer no grander. Homer does this hundreds of times, and it stays the poem&rsquo;s moral engine: war&rsquo;s cost is only ever visible one priced life at a time.</p>
+</div>
+
+</article>
+
+<hr class="rule">
+
+<section id="decoder-section">
+  <h2>Decoder: Butler&rsquo;s Roman names</h2>
+  <p class="map-note">Butler translated in 1898 using Roman names for the gods &mdash; and calls Paris &ldquo;Alexandrus,&rdquo; Diomedes &ldquo;Diomed.&rdquo; This retelling uses the Greek ones.</p>
+  <table class="decoder">
+    <thead><tr><th>Butler writes</th><th>This page says</th></tr></thead>
+    <tbody>
+      <tr><td>Jove</td><td>Zeus</td></tr>
+      <tr><td>Juno</td><td>Hera</td></tr>
+      <tr><td>Minerva</td><td>Athena</td></tr>
+      <tr><td>Venus</td><td>Aphrodite</td></tr>
+      <tr><td>Mars</td><td>Ares</td></tr>
+      <tr><td>Ulysses</td><td>Odysseus</td></tr>
+      <tr><td>Diomed</td><td>Diomedes</td></tr>
+      <tr><td>Alexandrus</td><td>Paris (same man)</td></tr>
+      <tr><td>Aesculapius</td><td>Asclepius</td></tr>
+      <tr><td>Saturn</td><td>Cronus</td></tr>
+    </tbody>
+  </table>
+</section>
+
+</div><!-- /main-col -->
+
+<aside class="side-col">
+<div class="side-inner">
+
+<section id="glossary-section">
+  <h2>Who&rsquo;s who</h2>
+
+  <div class="person" data-char="zeus">
+    <h3>Zeus</h3>
+    <p class="role">King of the gods</p>
+    <p>King of the gods. He knows Menelaus won fair, floats peace, gets overruled at his own table &mdash; and trades away the most pious city he has, booking a future grudge as compensation.</p>
+  </div>
+
+  <div class="person" data-char="hera">
+    <h3>Hera</h3>
+    <p class="role">Queen of the gods</p>
+    <p>Queen of the gods. She offers Zeus three of her own favorite cities to destroy whenever he likes, as the price of Troy. Her war, bought and paid for.</p>
+  </div>
+
+  <div class="person" data-char="athena">
+    <h3>Athena</h3>
+    <p class="role">Goddess of wisdom and war</p>
+    <p>In Book Four she&rsquo;s the whole machine: she finds the fool, sells him the shot, then deflects the arrow herself &mdash; she needs a wound, not a corpse.</p>
+  </div>
+
+  <div class="person" data-char="pandarus">
+    <h3>Pandarus</h3>
+    <p class="role">The archer who breaks the truce</p>
+    <p>An allied captain with a magnificent ibex-horn bow and, in Homer&rsquo;s words, a fool&rsquo;s heart. One arrow from him ends the truce &mdash; and any Trojan claim to the gods&rsquo; good will.</p>
+  </div>
+
+  <div class="person" data-char="menelaus">
+    <h3>Menelaus</h3>
+    <p class="role">King of Sparta</p>
+    <p>Winner of yesterday&rsquo;s duel, and today&rsquo;s designated victim &mdash; shot under truce, saved by a belt buckle and the goddess who aimed the arrow at it.</p>
+  </div>
+
+  <div class="person" data-char="agamemnon">
+    <h3>Agamemnon</h3>
+    <p class="role">Commander-in-chief of the Greek army</p>
+    <p>Commander of the Greeks. His brother&rsquo;s blood scares him into his best day of leadership: the walking tour where he calibrates praise, perks, and insult to each captain in turn.</p>
+  </div>
+
+  <div class="person" data-char="machaon">
+    <h3>Machaon</h3>
+    <p class="role">The army&rsquo;s surgeon</p>
+    <p>Son of Asclepius and the Greeks&rsquo; surgeon. He draws the arrow, bends back the barbs, and dresses the wound with drugs from Chiron&rsquo;s old recipe &mdash; medicine already generations deep.</p>
+  </div>
+
+  <div class="person" data-char="odysseus">
+    <h3>Odysseus</h3>
+    <p class="role">King of Ithaca</p>
+    <p>Insulted as feast-first, fight-last, he flares &mdash; and Agamemnon retracts instantly. Later he kills Democoon in rage for a fallen friend. Butler calls him Ulysses.</p>
+  </div>
+
+  <div class="person" data-char="diomedes">
+    <h3>Diomedes</h3>
+    <p class="role">Son of Tydeus, the coming man</p>
+    <p>Goaded with his father&rsquo;s legend, he says nothing, silences his own defender, and fights &mdash; the one captain in four books the insult machine can&rsquo;t reach. Book Five is his.</p>
+  </div>
+
+  <div class="person" data-char="nestor">
+    <h3>Nestor</h3>
+    <p class="role">Old king of Pylos</p>
+    <p>His formation puts chariots in front, solid infantry behind, and the cowards in the middle, where they must fight whether they will or no. Mechanism design, eight centuries BC.</p>
+  </div>
+
+  <div class="person" data-char="apollo">
+    <h3>Apollo</h3>
+    <p class="role">God of archery</p>
+    <p>He watches from Troy&rsquo;s citadel and shouts the war&rsquo;s sharpest morale line: their skins aren&rsquo;t stone or iron &mdash; and Achilles isn&rsquo;t even fighting.</p>
+  </div>
+
+  <div class="person" data-char="aphrodite">
+    <h3>Aphrodite</h3>
+    <p class="role">Goddess of love</p>
+    <p>Zeus&rsquo;s exhibit A in the council: while Hera and Athena sat watching, she was the only god on the field actually saving her man.</p>
+  </div>
+
+  <div class="person" data-char="paris">
+    <h3>Paris</h3>
+    <p class="role">Prince of Troy</p>
+    <p>The rescued man of Book Three, now a payer of bounties: Athena&rsquo;s pitch to Pandarus is that Paris would reward Menelaus&rsquo;s death handsomely. Butler calls him Alexandrus.</p>
+  </div>
+
+  <div class="person" data-char="achilles">
+    <h3>Achilles</h3>
+    <p class="role">The Greeks&rsquo; best fighter, on strike</p>
+    <p>Still by his ships, still out of the war &mdash; and now a weapon in absentia: Apollo rallies Troy on the news that the best of the Greeks isn&rsquo;t fighting.</p>
+  </div>
+
+  <div class="person" data-char="helen">
+    <h3>Helen</h3>
+    <p class="role">The settlement that almost happened</p>
+    <p>Zeus&rsquo;s peace proposal would have sent her home and left Troy standing. The goddesses voted otherwise.</p>
+  </div>
+
+  <div class="person" data-char="priam">
+    <h3>Priam</h3>
+    <p class="role">King of Troy</p>
+    <p>King of Troy. Zeus calls his city the most pious under the stars &mdash; in the same conversation where he signs it away.</p>
+  </div>
+</section>
+
+<section id="map-section">
+  <h2>The relationship map</h2>
+  <p class="map-note">Click a name in the essay, the glossary, or a box below to trace a character&rsquo;s connections. Esc or the empty background clears it.</p>
+  <div id="map-chip" aria-live="polite">
+    <span id="map-chip-label"></span>
+    <button type="button" id="map-chip-clear">clear</button>
+  </div>
+  <div class="person" id="char-detail" hidden aria-live="polite"></div>
+
+  <svg id="relmap" viewBox="0 0 880 600" role="img" aria-label="Relationship map of Iliad Book Four: Zeus and Hera trade cities, Athena persuades Pandarus to shoot Menelaus and deflects the arrow, Machaon heals him, Agamemnon reviews Odysseus, Diomedes, and Nestor">
+    <defs>
+      <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+        <path d="M 0 0 L 10 5 L 0 10 z" fill="#5c4f41"></path>
+      </marker>
+    </defs>
+
+    <text class="band-label" x="40" y="44">OLYMPUS</text>
+    <text class="band-label" x="40" y="345">THE GREEK CAMP</text>
+    <text class="band-label" x="740" y="220">TROY</text>
+
+    <!-- edges -->
+    <path class="edge" data-chars="zeus,hera" d="M 258 82 L 350 82"></path>
+    <text class="edge-label loud" data-chars="zeus,hera" x="304" y="72" text-anchor="middle">THE TRADE</text>
+
+    <path class="edge" data-chars="zeus,athena" d="M 258 96 Q 420 140 578 96" marker-end="url(#arrow)"></path>
+    <text class="edge-label" data-chars="zeus,athena" x="420" y="132" text-anchor="middle">sends</text>
+
+    <path class="edge" data-chars="athena,pandarus" d="M 665 104 L 715 226" marker-end="url(#arrow)"></path>
+    <text class="edge-label loud" data-chars="athena,pandarus" x="680" y="175" text-anchor="end">BREAKS THE TRUCE</text>
+
+    <path class="edge" data-chars="pandarus,menelaus" d="M 690 274 L 530 366" marker-end="url(#arrow)"></path>
+    <text class="edge-label" data-chars="pandarus,menelaus" x="630" y="312">the arrow</text>
+
+    <path class="edge" data-chars="athena,menelaus" d="M 610 104 L 505 366" marker-end="url(#arrow)"></path>
+    <text class="edge-label" data-chars="athena,menelaus" x="548" y="235" text-anchor="end">deflects it</text>
+
+    <path class="edge" data-chars="agamemnon,menelaus" d="M 298 392 L 430 392"></path>
+    <text class="edge-label" data-chars="agamemnon,menelaus" x="364" y="384" text-anchor="middle">brothers</text>
+
+    <path class="edge" data-chars="machaon,menelaus" d="M 640 470 L 545 412" marker-end="url(#arrow)"></path>
+    <text class="edge-label" data-chars="machaon,menelaus" x="620" y="448">heals</text>
+
+    <path class="edge" data-chars="agamemnon,odysseus" d="M 200 414 L 120 516" marker-end="url(#arrow)"></path>
+    <text class="edge-label" data-chars="agamemnon,odysseus" x="95" y="470" text-anchor="end">insults</text>
+
+    <path class="edge" data-chars="agamemnon,diomedes" d="M 280 414 L 420 516" marker-end="url(#arrow)"></path>
+    <text class="edge-label" data-chars="agamemnon,diomedes" x="355" y="468" text-anchor="end">goads</text>
+
+    <path class="edge" data-chars="agamemnon,nestor" d="M 250 414 L 264 516"></path>
+    <text class="edge-label" data-chars="agamemnon,nestor" x="272" y="470">praises</text>
+
+    <!-- nodes -->
+    <g class="node divine" id="node-zeus" data-node="zeus" tabindex="0" role="button" aria-label="Zeus — highlight connections">
+      <rect x="140" y="60" width="118" height="44" rx="8"></rect>
+      <text x="199" y="87" text-anchor="middle">Zeus</text>
+    </g>
+    <g class="node divine" id="node-hera" data-node="hera" tabindex="0" role="button" aria-label="Hera — highlight connections">
+      <rect x="350" y="60" width="118" height="44" rx="8"></rect>
+      <text x="409" y="87" text-anchor="middle">Hera</text>
+    </g>
+    <g class="node divine" id="node-athena" data-node="athena" tabindex="0" role="button" aria-label="Athena — highlight connections">
+      <rect x="580" y="60" width="118" height="44" rx="8"></rect>
+      <text x="639" y="87" text-anchor="middle">Athena</text>
+    </g>
+    <g class="node" id="node-pandarus" data-node="pandarus" tabindex="0" role="button" aria-label="Pandarus — highlight connections">
+      <rect x="660" y="230" width="118" height="44" rx="8"></rect>
+      <text x="719" y="257" text-anchor="middle">Pandarus</text>
+    </g>
+    <g class="node" id="node-menelaus" data-node="menelaus" tabindex="0" role="button" aria-label="Menelaus — highlight connections">
+      <rect x="430" y="370" width="118" height="44" rx="8"></rect>
+      <text x="489" y="397" text-anchor="middle">Menelaus</text>
+    </g>
+    <g class="node" id="node-agamemnon" data-node="agamemnon" tabindex="0" role="button" aria-label="Agamemnon — highlight connections">
+      <rect x="180" y="370" width="118" height="44" rx="8"></rect>
+      <text x="239" y="397" text-anchor="middle">Agamemnon</text>
+    </g>
+    <g class="node" id="node-machaon" data-node="machaon" tabindex="0" role="button" aria-label="Machaon — highlight connections">
+      <rect x="620" y="470" width="118" height="44" rx="8"></rect>
+      <text x="679" y="497" text-anchor="middle">Machaon</text>
+    </g>
+    <g class="node" id="node-odysseus" data-node="odysseus" tabindex="0" role="button" aria-label="Odysseus — highlight connections">
+      <rect x="40" y="520" width="118" height="44" rx="8"></rect>
+      <text x="99" y="547" text-anchor="middle">Odysseus</text>
+    </g>
+    <g class="node" id="node-nestor" data-node="nestor" tabindex="0" role="button" aria-label="Nestor — highlight connections">
+      <rect x="210" y="520" width="118" height="44" rx="8"></rect>
+      <text x="269" y="547" text-anchor="middle">Nestor</text>
+    </g>
+    <g class="node" id="node-diomedes" data-node="diomedes" tabindex="0" role="button" aria-label="Diomedes — highlight connections">
+      <rect x="380" y="520" width="118" height="44" rx="8"></rect>
+      <text x="439" y="547" text-anchor="middle">Diomedes</text>
+    </g>
+  </svg>
+</section>
+
+</div><!-- /side-inner -->
+</aside>
+
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  var CHARACTERS = {
+    zeus: {
+      name: 'Zeus',
+      role: 'King of the gods',
+      bio: "King of the gods. He knows Menelaus won fair, floats peace, gets overruled at his own table — and trades away the most pious city he has, booking a future grudge as compensation.",
+      hasNode: true
+    },
+    hera: {
+      name: 'Hera',
+      role: 'Queen of the gods',
+      bio: "Queen of the gods. She offers Zeus three of her own favorite cities to destroy whenever he likes, as the price of Troy. Her war, bought and paid for.",
+      hasNode: true
+    },
+    athena: {
+      name: 'Athena',
+      role: 'Goddess of wisdom and war',
+      bio: "In Book Four she's the whole machine: she finds the fool, sells him the shot, then deflects the arrow herself — she needs a wound, not a corpse.",
+      hasNode: true
+    },
+    pandarus: {
+      name: 'Pandarus',
+      role: 'The archer who breaks the truce',
+      bio: "An allied captain with a magnificent ibex-horn bow and, in Homer's words, a fool's heart. One arrow from him ends the truce — and any Trojan claim to the gods' good will.",
+      hasNode: true
+    },
+    menelaus: {
+      name: 'Menelaus',
+      role: 'King of Sparta',
+      bio: "Winner of yesterday's duel, and today's designated victim — shot under truce, saved by a belt buckle and the goddess who aimed the arrow at it.",
+      hasNode: true
+    },
+    agamemnon: {
+      name: 'Agamemnon',
+      role: 'Commander-in-chief of the Greek army',
+      bio: "Commander of the Greeks. His brother's blood scares him into his best day of leadership: the walking tour where he calibrates praise, perks, and insult to each captain in turn.",
+      hasNode: true
+    },
+    machaon: {
+      name: 'Machaon',
+      role: "The army's surgeon",
+      bio: "Son of Asclepius and the Greeks' surgeon. He draws the arrow, bends back the barbs, and dresses the wound with drugs from Chiron's old recipe — medicine already generations deep.",
+      hasNode: true
+    },
+    odysseus: {
+      name: 'Odysseus',
+      role: 'King of Ithaca',
+      bio: "Insulted as feast-first, fight-last, he flares — and Agamemnon retracts instantly. Later he kills Democoon in rage for a fallen friend. Butler calls him Ulysses.",
+      hasNode: true
+    },
+    diomedes: {
+      name: 'Diomedes',
+      role: 'Son of Tydeus, the coming man',
+      bio: "Goaded with his father's legend, he says nothing, silences his own defender, and fights — the one captain in four books the insult machine can't reach. Book Five is his.",
+      hasNode: true
+    },
+    nestor: {
+      name: 'Nestor',
+      role: 'Old king of Pylos',
+      bio: "His formation puts chariots in front, solid infantry behind, and the cowards in the middle, where they must fight whether they will or no. Mechanism design, eight centuries BC.",
+      hasNode: true
+    },
+    apollo: {
+      name: 'Apollo',
+      role: 'God of archery',
+      bio: "He watches from Troy's citadel and shouts the war's sharpest morale line: their skins aren't stone or iron — and Achilles isn't even fighting.",
+      hasNode: false
+    },
+    aphrodite: {
+      name: 'Aphrodite',
+      role: 'Goddess of love',
+      bio: "Zeus's exhibit A in the council: while Hera and Athena sat watching, she was the only god on the field actually saving her man.",
+      hasNode: false
+    },
+    paris: {
+      name: 'Paris',
+      role: 'Prince of Troy',
+      bio: "The rescued man of Book Three, now a payer of bounties: Athena's pitch to Pandarus is that Paris would reward Menelaus's death handsomely. Butler calls him Alexandrus.",
+      hasNode: false
+    },
+    achilles: {
+      name: 'Achilles',
+      role: "The Greeks' best fighter, on strike",
+      bio: "Still by his ships, still out of the war — and now a weapon in absentia: Apollo rallies Troy on the news that the best of the Greeks isn't fighting.",
+      hasNode: false
+    },
+    helen: {
+      name: 'Helen',
+      role: 'The settlement that almost happened',
+      bio: "Zeus's peace proposal would have sent her home and left Troy standing. The goddesses voted otherwise.",
+      hasNode: false
+    },
+    priam: {
+      name: 'Priam',
+      role: 'King of Troy',
+      bio: "King of Troy. Zeus calls his city the most pious under the stars — in the same conversation where he signs it away.",
+      hasNode: false
+    }
+  };
+
+  var reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  var svg = document.getElementById('relmap');
+  var mapSection = document.getElementById('map-section');
+  var chip = document.getElementById('map-chip');
+  var chipLabel = document.getElementById('map-chip-label');
+  var chipClear = document.getElementById('map-chip-clear');
+
+  /* ---------- Tooltip ---------- */
+
+  var tip = document.createElement('div');
+  tip.id = 'char-tooltip';
+  tip.setAttribute('role', 'tooltip');
+  tip.hidden = true;
+  document.body.appendChild(tip);
+
+  var showTimer = null;
+  var hideTimer = null;
+  var tipTarget = null;
+
+  function renderTip(id) {
+    var c = CHARACTERS[id];
+    if (!c) return false;
+    var html =
+      '<div class="tip-name">' + c.name + '</div>' +
+      '<div class="tip-role">' + c.role + '</div>' +
+      '<div class="tip-bio">' + c.bio + '</div>';
+    if (c.hasNode) {
+      html += '<div class="tip-hint">Click to see them on the map</div>';
+    }
+    tip.innerHTML = html;
+    return true;
+  }
+
+  function positionTip(target) {
+    var r = target.getBoundingClientRect();
+    tip.style.left = '0px';
+    tip.style.top = '0px';
+    var tw = tip.offsetWidth;
+    var th = tip.offsetHeight;
+    var left = r.left + r.width / 2 - tw / 2;
+    left = Math.max(8, Math.min(left, window.innerWidth - tw - 8));
+    var top = r.top - th - 10;
+    if (top < 8) top = r.bottom + 10;
+    if (top + th > window.innerHeight - 8) {
+      top = Math.max(8, window.innerHeight - th - 8);
+    }
+    tip.style.left = left + 'px';
+    tip.style.top = top + 'px';
+  }
+
+  function showTip(target) {
+    var id = target.getAttribute('data-char');
+    if (!renderTip(id)) return;
+    if (tipTarget && tipTarget !== target) {
+      tipTarget.removeAttribute('aria-describedby');
+    }
+    tipTarget = target;
+    tip.hidden = false;
+    positionTip(target);
+    target.setAttribute('aria-describedby', 'char-tooltip');
+  }
+
+  function hideTip() {
+    clearTimeout(showTimer);
+    clearTimeout(hideTimer);
+    tip.hidden = true;
+    if (tipTarget) {
+      tipTarget.removeAttribute('aria-describedby');
+      tipTarget = null;
+    }
+  }
+
+  /* ---------- Map highlight ---------- */
+
+  var detail = document.getElementById('char-detail');
+  var glossaryEntries = Array.prototype.slice.call(
+    document.querySelectorAll('#glossary-section .person[data-char]')
+  );
+
+  function clearHighlight() {
+    svg.classList.remove('dimmed');
+    svg.querySelectorAll('.lit').forEach(function (el) { el.classList.remove('lit'); });
+    svg.querySelectorAll('.sel').forEach(function (el) { el.classList.remove('sel'); });
+    chip.classList.remove('on');
+    detail.hidden = true;
+    glossaryEntries.forEach(function (p) { p.hidden = false; });
+  }
+
+  function highlightChar(id) {
+    var c = CHARACTERS[id];
+    if (!c || !c.hasNode) return;
+    clearHighlight();
+    svg.classList.add('dimmed');
+    var lit = { };
+    lit[id] = true;
+    svg.querySelectorAll('[data-chars]').forEach(function (el) {
+      var chars = el.getAttribute('data-chars').split(',');
+      if (chars.indexOf(id) !== -1) {
+        el.classList.add('lit');
+        chars.forEach(function (ch) { lit[ch] = true; });
+      }
+    });
+    Object.keys(lit).forEach(function (ch) {
+      var node = document.getElementById('node-' + ch);
+      if (node) node.classList.add('lit');
+    });
+    var selNode = document.getElementById('node-' + id);
+    if (selNode) selNode.classList.add('sel');
+    chipLabel.textContent = 'Showing: ' + c.name + ' —';
+    chip.classList.add('on');
+    detail.innerHTML =
+      '<h3>' + c.name + '</h3>' +
+      '<p class="role">' + c.role + '</p>' +
+      '<p>' + c.bio + '</p>';
+    detail.hidden = false;
+    // Glossary shows only the characters in the highlighted relationships.
+    glossaryEntries.forEach(function (p) {
+      p.hidden = !lit[p.getAttribute('data-char')];
+    });
+  }
+
+  var wideLayout = window.matchMedia('(min-width: 920px)');
+  var sideInner = document.querySelector('.side-inner');
+
+  function scrollToMap() {
+    var behavior = reducedMotion.matches ? 'auto' : 'smooth';
+    if (wideLayout.matches) {
+      // Map is pinned at the top of the sticky sidebar; just make sure
+      // the sidebar's own scroll hasn't pushed it out of view.
+      sideInner.scrollTo({ top: 0, behavior: behavior });
+      return;
+    }
+    mapSection.scrollIntoView({ behavior: behavior, block: 'center' });
+  }
+
+  function activate(id, scroll) {
+    var c = CHARACTERS[id];
+    if (!c || !c.hasNode) return;
+    hideTip();
+    highlightChar(id);
+    if (scroll) scrollToMap();
+  }
+
+  /* ---------- Essay spans ---------- */
+
+  var touchArmed = null;
+
+  document.querySelectorAll('.char').forEach(function (span) {
+    span.addEventListener('mouseenter', function () {
+      clearTimeout(hideTimer);
+      clearTimeout(showTimer);
+      showTimer = setTimeout(function () { showTip(span); }, 150);
+    });
+
+    span.addEventListener('mouseleave', function () {
+      clearTimeout(showTimer);
+      clearTimeout(hideTimer);
+      hideTimer = setTimeout(function () {
+        if (document.activeElement !== span || !tipTarget) hideTip();
+      }, 80);
+    });
+
+    span.addEventListener('focus', function () { showTip(span); });
+    span.addEventListener('blur', function () { hideTip(); });
+
+    span.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar') {
+        e.preventDefault();
+        activate(span.getAttribute('data-char'), true);
+      }
+    });
+
+    // Touch: first tap shows tooltip, second tap activates.
+    span.addEventListener('touchend', function (e) {
+      if (touchArmed !== span) {
+        e.preventDefault();
+        touchArmed = span;
+        clearTimeout(showTimer);
+        showTip(span);
+      } else {
+        touchArmed = null;
+      }
+    });
+
+    span.addEventListener('click', function () {
+      activate(span.getAttribute('data-char'), true);
+    });
+  });
+
+  document.addEventListener('touchstart', function (e) {
+    if (touchArmed && !touchArmed.contains(e.target)) {
+      touchArmed = null;
+      hideTip();
+    }
+  }, { passive: true });
+
+  /* ---------- Glossary entries ---------- */
+
+  document.querySelectorAll('.person').forEach(function (entry) {
+    var id = entry.getAttribute('data-char');
+    var c = CHARACTERS[id];
+    if (!c || !c.hasNode) return;
+    entry.classList.add('mappable');
+    entry.setAttribute('tabindex', '0');
+    entry.setAttribute('role', 'button');
+    entry.setAttribute('aria-label', c.name + ' — show on the relationship map');
+    entry.addEventListener('click', function () { activate(id, true); });
+    entry.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar') {
+        e.preventDefault();
+        activate(id, true);
+      }
+    });
+  });
+
+  /* ---------- Map nodes and background ---------- */
+
+  svg.querySelectorAll('.node').forEach(function (node) {
+    var id = node.getAttribute('data-node');
+    node.addEventListener('click', function (e) {
+      e.stopPropagation();
+      activate(id, false);
+    });
+    node.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar') {
+        e.preventDefault();
+        activate(id, false);
+      }
+    });
+  });
+
+  svg.addEventListener('click', function (e) {
+    if (!e.target.closest('.node')) clearHighlight();
+  });
+
+  chipClear.addEventListener('click', clearHighlight);
+
+  /* ---------- Quizzes ---------- */
+
+  document.querySelectorAll('.quiz').forEach(function (quiz) {
+    var answer = quiz.getAttribute('data-answer');
+    var opts = quiz.querySelectorAll('.quiz-opt');
+    opts.forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        if (quiz.classList.contains('answered')) return;
+        quiz.classList.add('answered');
+        if (btn.getAttribute('data-opt') !== answer) {
+          btn.classList.add('wrong-pick');
+        }
+        quiz.querySelector('[data-opt="' + answer + '"]').classList.add('right');
+        opts.forEach(function (b) { b.setAttribute('aria-disabled', 'true'); });
+        var why = quiz.querySelector('.quiz-why');
+        why.hidden = false;
+        why.setAttribute('role', 'status');
+      });
+    });
+  });
+
+  /* ---------- Global ---------- */
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') {
+      hideTip();
+      clearHighlight();
+    }
+  });
+
+  window.addEventListener('scroll', function () {
+    if (!tip.hidden && tipTarget) positionTip(tipTarget);
+  }, { passive: true });
+
+  window.addEventListener('resize', function () {
+    if (!tip.hidden && tipTarget) positionTip(tipTarget);
+  });
+})();
+</script>
+</body>
+</html>
