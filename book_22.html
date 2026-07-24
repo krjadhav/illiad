@@ -1,0 +1,1295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Death of Hector — Iliad, Book Twenty-Two</title>
+<style>
+  :root {
+    --bg: #16110c;
+    --surface: #221c17;
+    --text: #e7dfd3;
+    --muted: #a89880;
+    --faint: #3b3229;
+    --clay: #c0714f;
+    --serif: Georgia, 'Times New Roman', serif;
+    --sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { background: var(--bg); }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--serif);
+    line-height: 1.68;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .page {
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 64px 20px 96px;
+  }
+
+  /* Wide screens: essay left, sticky map + glossary + decoder right.
+     Breakpoint is deliberately low (920px) so the sidebar survives
+     browser zoom — zooming shrinks the CSS-pixel viewport, and at
+     1100px the layout collapsed to single-column at ~150% zoom. */
+  @media (min-width: 920px) {
+    .page {
+      display: grid;
+      max-width: 1300px;
+      grid-template-columns: 56px minmax(0, 680px) minmax(300px, 430px);
+      gap: clamp(28px, 4vw, 60px);
+      /* No align-items: start — the sidebar column must stretch to full
+         row height or position: sticky inside it has no room to travel. */
+    }
+    .side-col { min-width: 0; }
+    .side-inner {
+      position: sticky;
+      top: 20px;
+      max-height: calc(100vh - 40px);
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      padding-right: 6px;
+      scrollbar-width: thin;
+      scrollbar-color: var(--faint) transparent;
+    }
+    .side-inner #map-section { order: -1; margin-top: 0; }
+    .side-inner h2 { font-size: 17px; margin: 24px 0 10px; }
+    .side-inner .map-note { font-size: 12px; }
+    .side-inner .person { padding: 10px 12px; margin-bottom: 8px; }
+    .side-inner .person h3 { font-size: 15px; }
+    .side-inner .person .role { font-size: 10.5px; margin-bottom: 3px; }
+    .side-inner .person p:last-child { font-size: 13.5px; }
+    .side-inner table.decoder { font-size: 13px; }
+    .side-inner table.decoder th, .side-inner table.decoder td { padding: 6px 10px; }
+  }
+
+  header { margin-bottom: 40px; }
+
+  .book-nav {
+    font-family: var(--sans);
+    font-size: 13px;
+    margin-bottom: 20px;
+  }
+  .book-nav a {
+    color: var(--muted);
+    text-decoration: none;
+  }
+  .book-nav a:hover { color: var(--clay); }
+
+  .kicker {
+    font-family: var(--sans);
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--clay);
+    margin-bottom: 14px;
+  }
+
+  h1 {
+    font-size: 40px;
+    line-height: 1.15;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    margin-bottom: 12px;
+  }
+
+  .subtitle {
+    font-size: 19px;
+    color: var(--muted);
+    font-style: italic;
+  }
+
+  hr.rule {
+    border: none;
+    border-top: 1px solid var(--faint);
+    margin: 36px 0;
+  }
+
+  article { font-size: 19px; }
+  article p { margin-bottom: 1.35em; }
+  article em { font-style: italic; }
+
+  h2 {
+    font-size: 26px;
+    margin: 48px 0 18px;
+    letter-spacing: -0.01em;
+  }
+
+  /* Character references in the essay */
+  .char {
+    cursor: pointer;
+    text-decoration: underline dotted;
+    text-decoration-color: color-mix(in srgb, var(--clay) 60%, transparent);
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+  }
+  .char:hover { text-decoration-color: var(--clay); }
+  .char:focus-visible {
+    outline: 1px dashed var(--clay);
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+
+  /* Quizzes */
+  .quiz {
+    margin: 2em 0;
+    padding: 16px 18px 14px;
+    background: var(--surface);
+    border: 1px solid var(--faint);
+    border-left: 3px solid var(--clay);
+    border-radius: 8px;
+    font-family: var(--sans);
+  }
+  .quiz-kicker {
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--clay);
+    margin-bottom: 8px;
+  }
+  .quiz-q {
+    font-family: var(--serif);
+    font-size: 17px;
+    line-height: 1.45;
+    margin-bottom: 12px;
+  }
+  .quiz-opt {
+    display: block;
+    width: 100%;
+    text-align: left;
+    font-family: var(--sans);
+    font-size: 14px;
+    line-height: 1.45;
+    color: var(--text);
+    background: #2a221b;
+    border: 1px solid var(--faint);
+    border-radius: 6px;
+    padding: 9px 12px;
+    margin-bottom: 8px;
+    cursor: pointer;
+  }
+  .quiz-opt:hover { border-color: var(--clay); }
+  .quiz-opt:focus-visible {
+    outline: 1px dashed var(--clay);
+    outline-offset: 2px;
+  }
+  .quiz.answered .quiz-opt { cursor: default; opacity: 0.5; }
+  .quiz.answered .quiz-opt.right {
+    opacity: 1;
+    border-color: var(--clay);
+    background: #32271d;
+  }
+  .quiz.answered .quiz-opt.right::before { content: "\2713\00a0\00a0"; color: var(--clay); }
+  .quiz.answered .quiz-opt.wrong-pick {
+    opacity: 1;
+    border-style: dashed;
+  }
+  .quiz.answered .quiz-opt.wrong-pick::before { content: "\2717\00a0\00a0"; color: var(--muted); }
+  .quiz-why {
+    font-size: 14px;
+    color: var(--muted);
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid var(--faint);
+  }
+
+  /* Reading progress + gating */
+  #chapter-progress {
+    font-family: var(--sans);
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 16px;
+    max-width: 420px;
+  }
+  #chapter-progress.done { color: var(--clay); }
+  #chapter-progress .bar {
+    height: 4px;
+    background: var(--faint);
+    border-radius: 2px;
+    overflow: hidden;
+    margin-top: 6px;
+  }
+  #chapter-progress .fill {
+    height: 100%;
+    width: 0;
+    background: var(--clay);
+    border-radius: 2px;
+    transition: width 0.3s ease;
+  }
+  .locked { display: none; }
+  .continue-hint {
+    font-family: var(--sans);
+    font-size: 13px;
+    color: var(--muted);
+    border: 1px dashed var(--faint);
+    border-radius: 8px;
+    padding: 10px 14px;
+    margin: 1.5em 0;
+  }
+  .quiz .quiz-opt.wrong-pick { border-style: dashed; opacity: 0.6; }
+  .quiz .quiz-opt.wrong-pick::before { content: "\2717\00a0\00a0"; color: var(--muted); }
+  @media (prefers-reduced-motion: reduce) {
+    #chapter-progress .fill { transition: none; }
+  }
+
+  /* Checkpoint rail (left of the essay on wide screens) */
+  .rail { display: none; }
+  @media (min-width: 920px) {
+    .rail { display: block; }
+    .rail-inner {
+      position: sticky;
+      top: 90px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+    .rail-count {
+      font-family: var(--sans);
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+    }
+    .rail-count.done { color: var(--clay); }
+    .rail-track {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+    }
+    .rail-track::before {
+      content: "";
+      position: absolute;
+      top: 14px;
+      bottom: 14px;
+      left: 50%;
+      width: 1px;
+      background: var(--faint);
+    }
+    .rail-dot {
+      position: relative;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--sans);
+      font-size: 11.5px;
+      background: var(--bg);
+      border: 1px solid var(--faint);
+      color: var(--muted);
+      padding: 0;
+      cursor: default;
+    }
+    .rail-dot.passed {
+      background: var(--clay);
+      border-color: var(--clay);
+      color: var(--bg);
+      cursor: pointer;
+    }
+    .rail-dot.current {
+      border-color: var(--clay);
+      color: var(--clay);
+      cursor: pointer;
+    }
+    .rail-dot.passed:hover,
+    .rail-dot.current:hover {
+      box-shadow: 0 0 0 3px color-mix(in srgb, var(--clay) 25%, transparent);
+    }
+    .rail-dot:focus-visible {
+      outline: 1px dashed var(--clay);
+      outline-offset: 2px;
+    }
+  }
+
+  /* Tooltip */
+  #char-tooltip {
+    position: fixed;
+    z-index: 50;
+    max-width: min(320px, calc(100vw - 24px));
+    background: #221c17;
+    border: 1px solid var(--faint);
+    border-radius: 8px;
+    padding: 12px 14px;
+    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.55);
+    font-family: var(--sans);
+    font-size: 13.5px;
+    line-height: 1.5;
+    color: var(--text);
+    pointer-events: none;
+  }
+  #char-tooltip .tip-name {
+    font-family: var(--serif);
+    font-size: 17px;
+    font-weight: 700;
+    margin-bottom: 2px;
+  }
+  #char-tooltip .tip-role {
+    color: var(--clay);
+    font-size: 12px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  #char-tooltip .tip-bio { color: var(--muted); }
+  #char-tooltip .tip-hint {
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid var(--faint);
+    font-size: 12px;
+    color: var(--clay);
+  }
+
+  /* Decoder table */
+  table.decoder {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: var(--sans);
+    font-size: 15px;
+    margin: 8px 0 16px;
+  }
+  table.decoder th {
+    text-align: left;
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--faint);
+  }
+  table.decoder td {
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--faint);
+  }
+  table.decoder td:first-child { color: var(--clay); }
+
+  /* Glossary */
+  .person {
+    padding: 16px 18px;
+    margin-bottom: 12px;
+    background: var(--surface);
+    border: 1px solid var(--faint);
+    border-radius: 8px;
+  }
+  .person h3 { font-size: 18px; margin-bottom: 2px; }
+  .person .role {
+    font-family: var(--sans);
+    font-size: 12px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--clay);
+    margin-bottom: 6px;
+  }
+  .person p:last-child {
+    font-size: 16px;
+    color: var(--muted);
+    margin: 0;
+  }
+  .person.mappable { cursor: pointer; }
+  .person.mappable:hover { border-color: var(--clay); }
+  .person.mappable:focus-visible {
+    outline: 1px dashed var(--clay);
+    outline-offset: 2px;
+  }
+
+  /* Map */
+  #map-section { margin-top: 48px; }
+  .map-note {
+    font-family: var(--sans);
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 12px;
+  }
+  #map-chip {
+    display: none;
+    align-items: center;
+    gap: 10px;
+    font-family: var(--sans);
+    font-size: 13px;
+    background: var(--surface);
+    border: 1px solid var(--clay);
+    border-radius: 999px;
+    padding: 6px 8px 6px 14px;
+    margin-bottom: 12px;
+  }
+  #map-chip.on { display: inline-flex; }
+  #map-chip button {
+    font-family: var(--sans);
+    font-size: 12px;
+    color: var(--bg);
+    background: var(--clay);
+    border: none;
+    border-radius: 999px;
+    padding: 3px 10px;
+    cursor: pointer;
+  }
+  #map-chip button:focus-visible {
+    outline: 1px dashed var(--text);
+    outline-offset: 2px;
+  }
+
+  #relmap {
+    width: 100%;
+    height: auto;
+    display: block;
+    background: var(--surface);
+    border: 1px solid var(--faint);
+    border-radius: 10px;
+  }
+  #relmap .node rect {
+    fill: #2a221b;
+    stroke: var(--faint);
+    stroke-width: 1;
+  }
+  #relmap .node.divine rect { fill: #2e241a; }
+  #relmap .node text {
+    fill: var(--text);
+    font-family: var(--sans);
+    font-size: 14px;
+    letter-spacing: 0.04em;
+  }
+  #relmap .node { cursor: pointer; }
+  #relmap .node:hover rect { stroke: var(--clay); }
+  #relmap .node:focus { outline: none; }
+  #relmap .node:focus-visible rect { stroke: var(--clay); stroke-dasharray: 3 3; }
+  #relmap .edge {
+    stroke: #5c4f41;
+    stroke-width: 1.5;
+    fill: none;
+  }
+  #relmap .edge-label {
+    fill: #91816c;
+    font-family: var(--sans);
+    font-size: 11px;
+    letter-spacing: 0.03em;
+  }
+  #relmap .edge-label.loud {
+    fill: var(--clay);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+  }
+  #relmap .band-label {
+    fill: #6b5c4a;
+    font-family: var(--sans);
+    font-size: 10px;
+    letter-spacing: 0.22em;
+  }
+
+  #relmap .node, #relmap .edge, #relmap .edge-label {
+    transition: opacity 0.2s ease;
+  }
+  #relmap.dimmed .node,
+  #relmap.dimmed .edge,
+  #relmap.dimmed .edge-label { opacity: 0.15; }
+  #relmap.dimmed .lit { opacity: 1; }
+  #relmap .node.sel rect {
+    stroke: var(--clay);
+    stroke-width: 2.5;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    #relmap .node, #relmap .edge, #relmap .edge-label { transition: none; }
+  }
+
+  @media (max-width: 480px) {
+    h1 { font-size: 32px; }
+    article { font-size: 17.5px; }
+    .page { padding-top: 44px; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+<aside class="rail" aria-label="Chapter checkpoints">
+  <div class="rail-inner">
+    <div class="rail-count" id="rail-count"></div>
+    <div class="rail-track" id="rail-track"></div>
+  </div>
+</aside>
+
+<div class="main-col">
+
+<header>
+  <nav class="book-nav"><a href="index.html">&uarr; Contents</a> &nbsp;&middot;&nbsp; <a href="book_21.html">&larr; Book 21</a> &nbsp;&middot;&nbsp; <a href="book_23.html">Book 23 &rarr;</a></nav>
+  <div class="kicker">The Iliad, retold</div>
+  <h1>Book 22</h1>
+  <p class="subtitle">Book Twenty-Two, after Samuel Butler&rsquo;s translation &mdash; a duel decided by fraud, a body dragged behind a chariot, and bath water heating for a man already dead.</p>
+  <div id="chapter-progress" aria-live="polite">
+    <span id="chapter-progress-label"></span>
+    <div class="bar"><div class="fill"></div></div>
+  </div>
+</header>
+
+<hr class="rule">
+
+<article>
+
+<p>Every soldier Troy has left is now inside the wall. Homer opens on the routed army pouring through the gates &ldquo;scared like fawns,&rdquo; wiping off sweat, leaning against the battlements to drink. Then the camera finds the one man still outside. Butler&rsquo;s sentence says that &ldquo;stern fate&rdquo; bade <span class="char" data-char="hector" tabindex="0" role="button">Hector</span> stay where he was, before Ilius and the Scaean gates &mdash; and then the poem spends its whole length showing you the actual mechanism, which is not fate, and is worse.</p>
+
+<p>First it settles a bill from the last book. <span class="char" data-char="achilles" tabindex="0" role="button">Achilles</span> has spent the rout chasing a Trojan who turns out to be <span class="char" data-char="apollo" tabindex="0" role="button">Apollo</span> in costume &mdash; a decoy, run to pull him away from the walls while the army escaped. Now the god drops the disguise and teases: why chase me, who am immortal, &ldquo;you, who are but man&rdquo;? The answer tells you where <span class="char" data-char="achilles" tabindex="0" role="button">Achilles</span> is now: you have robbed me of great glory and saved the Trojans at no risk to yourself &mdash; <em>I would indeed have my revenge if it were in my power.</em> He is threatening a god to his face, and means it. Then he turns for the city like the winning horse in a chariot race, and <span class="char" data-char="priam" tabindex="0" role="button">Priam</span> sees him first: a gleam crossing the plain like the star men call Orion&rsquo;s Hound, brightest of them all and the worst omen, because it brings fever in its train. Homer&rsquo;s similes have been keeping the moral books all poem; this one files <span class="char" data-char="achilles" tabindex="0" role="button">Achilles</span> under natural disaster.</p>
+
+<p>What follows is one of the poem&rsquo;s cruelest inventions: the parents on the wall, close enough to plead, arguing for their son&rsquo;s life while the killer closes. <span class="char" data-char="priam" tabindex="0" role="button">Priam</span> tears his gray hair and begins like a negotiator &mdash; come inside, you will have the glory of guarding Trojan men and Trojan women, don&rsquo;t hand this man his triumph &mdash; and then stops negotiating and simply shows <span class="char" data-char="hector" tabindex="0" role="button">Hector</span> the future: sons slain, daughters hauled off, infants dashed to the earth, and at the end of it an old man torn apart at his own gates by his own dogs &mdash; &ldquo;hounds that I myself reared and fed at my own table,&rdquo; who will lap his blood and lie sated in his doorway. A young man dead in battle is seemly, he says; everything shows honorably on him. But dogs defiling an old man&rsquo;s gray head and beard &ldquo;and all that men hide for shame&rdquo; &mdash; nothing in the world is more pitiable. He is not describing the fall of Troy in general. He is looking at his own corpse.</p>
+
+<p><span class="char" data-char="hecuba" tabindex="0" role="button">Hecuba</span> goes below argument entirely. She bares her bosom, points to the breast, and calls in the oldest debt there is: if I ever gave you comfort here, honor it now and fight from inside the wall &mdash; because if he kills you out there, neither I nor your richly-dowered wife will ever weep over your body; the dogs will have you by the ships. Homer&rsquo;s line for the result is flat as a door closing: they moved not the heart of <span class="char" data-char="hector" tabindex="0" role="button">Hector</span>. He waits for <span class="char" data-char="achilles" tabindex="0" role="button">Achilles</span> the way a serpent full of poison waits coiled at its den &mdash; the defender of the city rendered, for the space of one simile, as the snake in the wall.</p>
+
+<p>Then Homer opens his head, and we get the real answer. &ldquo;If I go within the gates,&rdquo; <span class="char" data-char="hector" tabindex="0" role="button">Hector</span> says to himself, &ldquo;<span class="char" data-char="polydamas" tabindex="0" role="button">Polydamas</span> will be the first to heap reproach upon me&rdquo; &mdash; <span class="char" data-char="polydamas" tabindex="0" role="button">Polydamas</span>, who urged him to bring the army inside the walls the night <span class="char" data-char="achilles" tabindex="0" role="button">Achilles</span> came back, and was overruled. <em>Now that my folly has destroyed the host, I dare not look Trojan men and Trojan women in the face, lest a worse man should say, &ldquo;<span class="char" data-char="hector" tabindex="0" role="button">Hector</span> has ruined us by his self-confidence.&rdquo;</em> Read it carefully: not fate, not courage, not the defense of Troy &mdash; which, as every voice on the wall correctly points out, would be better served by his coming inside. What holds him at the gate is the anticipated sound of an I-told-you-so. In Book Six he said the same thing to his wife &mdash; with what face could I look on the Trojans if I hung back &mdash; but then it was hypothetical, the price of a role he was still equal to. Now the ledger shows real losses, his fault, and the role collects.</p>
+
+<p>The soliloquy&rsquo;s second half is stranger and more human: the fantasy of negotiation. What if I lay down the shield, lean the spear against the wall, and walk out to meet him &mdash; offer to give back Helen, and with her half of everything the city contains, sworn to by the princes, nothing hidden? For a few lines the war becomes a settlement conference. Then he catches himself: he would kill me &ldquo;then and there, as easily as though I were a woman, when I had off my armour. There is no parleying with him from some rock or oak tree, as young men and maidens prattle with one another.&rdquo; Notice where his mind reached for a picture of safe talk: courting couples by a rock. Even his image of parley comes from peacetime, and this is the last time he will see it. Better to fight at once, he decides, and learn to which of us <span class="char" data-char="zeus" tabindex="0" role="button">Zeus</span> will give the victory.</p>
+
+<div class="quiz" data-answer="b">
+  <div class="quiz-kicker">Pause &mdash; check yourself</div>
+  <p class="quiz-q">Priam shows Hector his own corpse; Hecuba shows him the breast that nursed him. He stays outside anyway, and his soliloquy tells us why. What actually holds him at the gate?</p>
+  <div class="quiz-opts">
+    <button type="button" class="quiz-opt" data-opt="a">Fate &mdash; Butler says it outright, stern fate bade him stay, and the scales that will sink were cast long before this morning</button>
+    <button type="button" class="quiz-opt" data-opt="b">Shame &mdash; he lost the army against good advice, and facing Achilles is easier than facing Polydamas and the sentence of &ldquo;a worse man&rdquo;</button>
+    <button type="button" class="quiz-opt" data-opt="c">Duty &mdash; he is the guardian of Trojan men and women, and a guardian cannot be seen retreating while any threat stands at the gates</button>
+  </div>
+  <p class="quiz-why" hidden>The narrator does say &ldquo;stern fate&rdquo; &mdash; and then Homer immediately opens Hector&rsquo;s head and shows machinery, not destiny: &ldquo;Polydamas will be the first to heap reproach upon me&hellip; I dare not look Trojan men and Trojan women in the face.&rdquo; He is held not by the gods but by an imagined quote from &ldquo;a worse man.&rdquo; Duty fails even faster: guarding Troy argues for going inside, and Priam says exactly that &mdash; come in and <em>be</em> our guardian. This is Book Six&rsquo;s answer completing itself. The job called &ldquo;Hector&rdquo; exists only in other people&rsquo;s eyes, and today it forecloses.</p>
+</div>
+
+<p><span class="char" data-char="achilles" tabindex="0" role="button">Achilles</span> arrives like Ares himself, the ash spear over his right shoulder, bronze flashing like fire or the rising sun. And <span class="char" data-char="hector" tabindex="0" role="button">Hector</span> &mdash; the man who has just talked himself into standing &mdash; runs. Homer neither hides it nor sneers at it: fear fell on him, the falcon swooped, the dove fled before it. Then the poet&rsquo;s own verdict, evenhanded as a race official&rsquo;s: <em>good was the man that fled, but better far was he that followed after.</em> They run the wagon-road under the wall, past the lookout station, past the weather-beaten wild fig-tree, to the two springs that feed the Scamander &mdash; one running warm, steam standing off it like smoke from a fire; the other, even in midsummer, cold as hail.</p>
+
+<p>And there, mid-chase, Homer stops. Beside the springs stand &ldquo;the goodly washing-troughs of stone, where in the time of peace, before the coming of the Achaeans, the wives and fair daughters of the Trojans used to wash their clothes.&rdquo; The most consequential footrace in literature pauses for laundry. It is not a digression; it is the stakes. The peacetime city isn&rsquo;t somewhere else &mdash; it is embedded in the ground the war is being run on, one landmark among the landmarks, and the two men sprint past it three full times: wives, daughters, clean linen, unhurried mornings, sitting beside the racecourse in stone. Then Homer prices the race itself: they ran as men run at funeral games, but the prize was no tripod or ox-hide &mdash; <em>they ran for the life of <span class="char" data-char="hector" tabindex="0" role="button">Hector</span></em>. And their locked speeds get the poem&rsquo;s eeriest simile: as in a dream, where the pursuer can never quite catch, and the pursued can never quite escape.</p>
+
+<div class="quiz" data-answer="c">
+  <div class="quiz-kicker">Pause &mdash; check yourself</div>
+  <p class="quiz-q">Mid-chase, with Hector running for his life, Homer describes the stone troughs where Trojan wives washed clothes in the days of peace. Why put laundry in the poem&rsquo;s most desperate mile?</p>
+  <div class="quiz-opts">
+    <button type="button" class="quiz-opt" data-opt="a">Realism &mdash; fixed landmarks like the road, the fig-tree, and the springs let the audience track three full laps around an actual city</button>
+    <button type="button" class="quiz-opt" data-opt="b">Pacing &mdash; a still, cold image slows the sprint for a beat, so the fourth lap and the golden scales can land with full weight</button>
+    <button type="button" class="quiz-opt" data-opt="c">Stakes &mdash; the peacetime world sits embedded in the war&rsquo;s own geography, and it is exactly what dies if the man running past it dies</button>
+  </div>
+  <p class="quiz-why" hidden>Homer does use landmarks to track the laps &mdash; but the troughs get details no map needs: the steam off the warm spring, the wives and daughters, &ldquo;before the coming of the Achaeans.&rdquo; That last phrase is the tell. The domestic past isn&rsquo;t contrast for its own sake (the pacing reading); it&rsquo;s buried in the racecourse like a fossil &mdash; the two men are literally running over what the war is about. Homer then says the price out loud: not a tripod, not an ox-hide &mdash; the prize was the life of Hector, which is to say, everything the washing-tanks stood for.</p>
+</div>
+
+<p>The gods watch the laps like spectators with money down. <span class="char" data-char="zeus" tabindex="0" role="button">Zeus</span>, who genuinely pities, says so: my heart grieves for <span class="char" data-char="hector" tabindex="0" role="button">Hector</span>, who burned the thigh-bones of many a heifer to me on Ida and on the citadel &mdash; shall we save him, or let him fall? <span class="char" data-char="athena" tabindex="0" role="button">Athena</span> answers with a lawyer&rsquo;s edge: this man&rsquo;s doom &ldquo;has long been decreed&rdquo; &mdash; do as you will, but the rest of us will not praise you. And <span class="char" data-char="zeus" tabindex="0" role="button">Zeus</span> folds at once: take heart, my child, &ldquo;I did not speak in full earnest.&rdquo; Do as you are minded. Below, meanwhile, <span class="char" data-char="achilles" tabindex="0" role="button">Achilles</span> is running the honor accounting at a dead sprint &mdash; shaking his head at his own army so that no one throws a dart at <span class="char" data-char="hector" tabindex="0" role="button">Hector</span>, &ldquo;lest another might win the glory of having hit him and he might himself come in second.&rdquo; On the fourth pass by the springs, <span class="char" data-char="zeus" tabindex="0" role="button">Zeus</span> lifts the golden scales, sets a doom in each pan, and holds the balance by the middle. <span class="char" data-char="hector" tabindex="0" role="button">Hector</span>&rsquo;s side sinks toward the house of Hades &mdash; and <span class="char" data-char="apollo" tabindex="0" role="button">Apollo</span>, who has been sustaining his strength and nerving his running the whole chase, leaves him. No farewell, no last word. Gods do not stay past the verdict.</p>
+
+<p>What <span class="char" data-char="athena" tabindex="0" role="button">Athena</span> does next is the coldest act any god commits in the poem. She tells <span class="char" data-char="achilles" tabindex="0" role="button">Achilles</span> to stop and take breath &mdash; I will bring him to you &mdash; and goes to <span class="char" data-char="hector" tabindex="0" role="button">Hector</span> wearing the shape and voice of his brother <span class="char" data-char="deiphobus" tabindex="0" role="button">Deiphobus</span>: dear brother, let us stand and meet him together. <span class="char" data-char="hector" tabindex="0" role="button">Hector</span>&rsquo;s reply breaks your heart before the trap even closes: you were always dearest to me of all my brothers, and I shall rate you higher still now, for &ldquo;you have ventured outside the wall for my sake, when all the others remain inside.&rdquo; The lie is precision-tooled. Fake <span class="char" data-char="deiphobus" tabindex="0" role="button">Deiphobus</span> says his father and mother went down on their knees begging him to stay, and he came anyway &mdash; <span class="char" data-char="athena" tabindex="0" role="button">Athena</span> has fabricated, out of air, exactly the loyalty <span class="char" data-char="hector" tabindex="0" role="button">Hector</span> just refused his own parents, and handed it to him as a mirror. Butler&rsquo;s verb is exact: thus did the goddess <em>inveigle</em> him.</p>
+
+<p>So <span class="char" data-char="hector" tabindex="0" role="button">Hector</span> turns and stands, and offers what fighters in this poem have always offered: terms. Let our gods be witnesses &mdash; if <span class="char" data-char="zeus" tabindex="0" role="button">Zeus</span> gives me the day, I will not treat your body in any unseemly way; I take the armor and give the dead man back. Do the same for me. It is the minimal deal, the floor of civilization &mdash; not mercy, just funerals. <span class="char" data-char="achilles" tabindex="0" role="button">Achilles</span> glares at him. <em>Fool, prate not to me about covenants. There can be no covenants between men and lions, wolves and lambs can never be of one mind.</em> Until one of us falls and gluts Ares with his blood, there is nothing to discuss. Remember Book Six: two enemies found one inherited thread of obligation in the middle of a battle and traded armor on the strength of it. That machinery &mdash; oath, ransom, guest-friendship, the whole apparatus that keeps enemies inside one species &mdash; has burned out of <span class="char" data-char="achilles" tabindex="0" role="button">Achilles</span> completely, and he says so in species terms: he has reclassified himself as another kind of animal. He even discloses the fix, openly, before the first throw: Pallas <span class="char" data-char="athena" tabindex="0" role="button">Athena</span> will forthwith vanquish you by my spear.</p>
+
+<div class="quiz" data-answer="a">
+  <div class="quiz-kicker">Pause &mdash; check yourself</div>
+  <p class="quiz-q">Hector proposes terms any duel so far would honor &mdash; winner returns the loser&rsquo;s body. Achilles answers that there are no covenants between men and lions. What is the poem measuring with that refusal?</p>
+  <div class="quiz-opts">
+    <button type="button" class="quiz-opt" data-opt="a">How far grief has carried Achilles out of the human system &mdash; the machinery that lets enemies make deals no longer runs in him</button>
+    <button type="button" class="quiz-opt" data-opt="b">How far the war has decayed the old codes &mdash; nine years in, the ransom-and-truce economy has collapsed for every man on the field</button>
+    <button type="button" class="quiz-opt" data-opt="c">How clearly Achilles reads the moment &mdash; a man this desperate offering terms is setting a trap, and he refuses to negotiate with it</button>
+  </div>
+  <p class="quiz-why" hidden>The decay reading tempts most, because the poem has tracked it since &ldquo;not even the unborn&rdquo; in Book Six &mdash; but two books from now Achilles himself will hand this same body back to Priam, so the code isn&rsquo;t dead in the world; it&rsquo;s dead in him, for now. He frames the refusal in species terms &mdash; lions and men, wolves and lambs &mdash; announcing that he has left the group that makes agreements. Book Six staged the exact opposite scene: Glaucus and Diomedes finding one thread of obligation mid-battle and trading armor on it. And the trap reading has the scene backwards &mdash; the man with divine backing is Achilles, and he says so out loud.</p>
+</div>
+
+<p><span class="char" data-char="achilles" tabindex="0" role="button">Achilles</span> throws first and misses &mdash; <span class="char" data-char="hector" tabindex="0" role="button">Hector</span> crouches, the spear passes over him and sticks in the ground. <span class="char" data-char="athena" tabindex="0" role="button">Athena</span> plucks it out and returns it, invisibly, while <span class="char" data-char="hector" tabindex="0" role="button">Hector</span> &mdash; not seeing &mdash; taunts the thrower: you missed, you false-tongued liar; and you will not plant your spear in the back of a runaway &mdash; drive it through my chest as I come straight at you. Then his own throw, and it is true: dead center of the wondrous shield. It rebounds. He calls to <span class="char" data-char="deiphobus" tabindex="0" role="button">Deiphobus</span> for a second spear &mdash; and there is no man there. And he understands everything at once, and says it with the calm of a man reading his own audit: <em>the gods have lured me on to my destruction&hellip; <span class="char" data-char="deiphobus" tabindex="0" role="button">Deiphobus</span> is within the wall, and <span class="char" data-char="athena" tabindex="0" role="button">Athena</span> has inveigled me; death is now indeed exceedingly near at hand, and there is no way out of it.</em> So <span class="char" data-char="zeus" tabindex="0" role="button">Zeus</span> and <span class="char" data-char="apollo" tabindex="0" role="button">Apollo</span> have willed it &mdash; the gods who before were always ready to protect me. No wailing, no bargaining with heaven. One sentence of recognition, then the pivot on which his whole dignity turns: <em>let me not then die ingloriously and without a struggle, but let me first do some great thing that shall be told among men hereafter.</em> He draws the sword and comes on like an eagle dropping through cloud. The duel that decides the Iliad is rigged; the poem has shown you every component of the cheat and does not flinch from any of it. What it grants <span class="char" data-char="hector" tabindex="0" role="button">Hector</span> is the one unrigged thing left &mdash; knowing everything, he still charges.</p>
+
+<p><span class="char" data-char="achilles" tabindex="0" role="button">Achilles</span> picks his spot like a craftsman. <span class="char" data-char="hector" tabindex="0" role="button">Hector</span> is sheathed head to foot in the armor he stripped from <span class="char" data-char="patroclus" tabindex="0" role="button">Patroclus</span> &mdash; <span class="char" data-char="achilles" tabindex="0" role="button">Achilles</span>&rsquo; own old armor; the man dies wearing the evidence &mdash; and the one person alive who knows that armor&rsquo;s single gap is the man scanning it for one. The throat, where the collarbones part the neck from the shoulders. The spear goes through &mdash; &ldquo;but it did not sever his windpipe, so that he could still speak.&rdquo; Homer engineers the wound itself so the scene can finish talking. <span class="char" data-char="hector" tabindex="0" role="button">Hector</span>, dying, asks once more for the floor of civilization: I pray you by your life, your knees, your parents &mdash; take the gold my father and mother will weigh out, and send my body home for the fire. And <span class="char" data-char="achilles" tabindex="0" role="button">Achilles</span>: <em>Dog, talk not to me neither of knees nor parents; would that I could be as sure of being able to cut your flesh into pieces and eat it raw</em> &mdash; not for twentyfold ransom, not for your weight in gold, will your mother ever lay you out and mourn you; the dogs and birds will have you utterly. <span class="char" data-char="hector" tabindex="0" role="button">Hector</span> spends his last breath on a prophecy: look to it that I bring not heaven&rsquo;s anger upon you, on the day Paris and <span class="char" data-char="apollo" tabindex="0" role="button">Apollo</span> kill you, valiant as you are, at the Scaean gates &mdash; this gate, the one whose shadow they are standing in. And <span class="char" data-char="achilles" tabindex="0" role="button">Achilles</span> answers his own death notice without a flicker: <em>Die; for my part I will accept my fate whensoever <span class="char" data-char="zeus" tabindex="0" role="button">Zeus</span> and the other gods see fit to send it.</em></p>
+
+<div class="quiz" data-answer="c">
+  <div class="quiz-kicker">Pause &mdash; check yourself</div>
+  <p class="quiz-q">Hector calls for Deiphobus, finds no one, and understands: Athena tricked him, the gods have called him, death is near. What does he do first with that knowledge?</p>
+  <div class="quiz-opts">
+    <button type="button" class="quiz-opt" data-opt="a">He bargains &mdash; with nothing left to offer he pleads the ransom for his body in advance, trusting forms where the gods have failed him</button>
+    <button type="button" class="quiz-opt" data-opt="b">He indicts &mdash; his closing words charge heaven&rsquo;s cheat and promise that its anger will find Achilles at these same Scaean gates</button>
+    <button type="button" class="quiz-opt" data-opt="c">He charges &mdash; cheated, spearless, and certain, he draws the sword and elects the one thing the gods left him: the manner of it</button>
+  </div>
+  <p class="quiz-why" hidden>He does eventually plead for his body, and his dying breath is the prophecy &mdash; both other options quote the scene truthfully, just out of order. The first thing he does on understanding is neither: &ldquo;let me not then die ingloriously and without a struggle, but let me first do some great thing that shall be told among men hereafter&rdquo; &mdash; and then the eagle-dive at a man the gods have already armed twice. The duel was rigged and he knows it; his dignity is that the knowledge changes nothing. The shame that pinned him outside the gate converts, in his last minute, into the choice of how the story will tell it.</p>
+</div>
+
+<p>What follows the death is worse than the death. The Achaeans come running up to view <span class="char" data-char="hector" tabindex="0" role="button">Hector</span>&rsquo;s &ldquo;wondrous strength and beauty&rdquo; &mdash; and no one, Homer says, came near him without giving him a fresh wound. The joke goes around the circle as the spears go in: easier to handle him now than when he was flinging fire onto our ships. <span class="char" data-char="achilles" tabindex="0" role="button">Achilles</span> starts drafting strategy over the body &mdash; should we storm the city now, while they reel? &mdash; and stops himself mid-sentence, because grief interrupts even his tactics: why argue with myself, while <span class="char" data-char="patroclus" tabindex="0" role="button">Patroclus</span> lies at the ships unburied, unmourned. Then the thing itself. He pierces the sinews of both feet from heel to ankle, threads ox-hide thongs through the slits, lashes the body to his chariot, loads the captured armor, mounts, and whips the horses &mdash; &ldquo;letting the head trail upon the ground.&rdquo; Dust rises off the dark hair; the head &ldquo;once so comely&rdquo; plows the earth of its own country. Homer names who signed the order: <span class="char" data-char="zeus" tabindex="0" role="button">Zeus</span> had now delivered him into the hands of his foes, to be outraged in his own land.</p>
+
+<p>On the wall, <span class="char" data-char="hecuba" tabindex="0" role="button">Hecuba</span> tears her hair and flings her veil away with a cry; <span class="char" data-char="priam" tabindex="0" role="button">Priam</span> makes his piteous moan; and the whole city takes up the wail &mdash; and Homer reaches for the exact right comparison: it was as though all of frowning Ilius &ldquo;were being smirched with fire.&rdquo; The city grieves this one death as the sack itself, because it is; everything after is paperwork. <span class="char" data-char="priam" tabindex="0" role="button">Priam</span> has to be physically held back &mdash; he grovels in the mire, calling each man around him by name: let be, my friends, and suffer me to go alone to the ships of the Achaeans and beseech this cruel and terrible man. His own father is old, as I am; perhaps he will respect the feeling of his fellow-men. Hold that thought &mdash; it is Book Twenty-Four arriving two books early. Would that my son had died in my arms, he says; then his mother and I could at least have wept over him. <span class="char" data-char="hecuba" tabindex="0" role="button">Hecuba</span>&rsquo;s lament is simpler: you were my glory night and day, and a tower of strength to all in Troy; men and women hailed you as a god.</p>
+
+<p>And then Homer cuts to the one person in Troy who does not know. <span class="char" data-char="andromache" tabindex="0" role="button">Andromache</span> has heard nothing &mdash; no messenger even to tell her that her husband stayed outside the gates. She is deep in the house at her loom, weaving a double purple web and embroidering it with flowers, and she has just told her maids to set the great tripod on the fire, &ldquo;so as to have a warm bath ready for <span class="char" data-char="hector" tabindex="0" role="button">Hector</span> when he came out of battle &mdash; poor woman, she knew not that he was now beyond the reach of baths.&rdquo; This is the cruelest device Homer owns: not the death but the lag. Her ordinary hour keeps running &mdash; flowers going into cloth, water warming on the fire &mdash; inside a world that ended an hour ago on the far side of the wall. Then the wailing reaches the inner room, and the shuttle drops from her hands. And listen to her guess, before she knows anything: I fear <span class="char" data-char="achilles" tabindex="0" role="button">Achilles</span> has cut off my husband alone on the plain &mdash; has ended &ldquo;the reckless daring which possessed him, for he would never remain with the body of his men, but would dash on far in front, foremost of them all in valour.&rdquo; She diagnoses his death precisely, sight unseen. She always knew. In Book Six she said it to his face: your own courage will kill you. Now she runs for the wall &ldquo;like a maniac&rdquo; &mdash; the same frantic run the housekeeper described back then, when the dash to the wall still ended at the Scaean gates with a laugh, a kiss, and a helmet set gleaming on the ground. This time she reaches the battlements in time to see the horses dragging him toward the ships. Night shrouds her eyes; she falls backward; and off her head fly the bindings &mdash; frontlet, net, plaited band, and the veil golden Aphrodite gave her on the day <span class="char" data-char="hector" tabindex="0" role="button">Hector</span> led her from Eetion&rsquo;s house with countless wedding gifts. The marriage arrived with that veil. It leaves with it.</p>
+
+<p>Her lament, when she can speak, is the strangest and truest in the poem, because it is not about <span class="char" data-char="hector" tabindex="0" role="button">Hector</span>&rsquo;s glory and barely about her own ruin. It is about a boy&rsquo;s place at a table. <span class="char" data-char="astyanax" tabindex="0" role="button">Astyanax</span>&rsquo;s future arrives not as death &mdash; the audience knows that worse truth &mdash; but as a catalog of small social humiliations: he will go about among his father&rsquo;s old friends &ldquo;plucking one by the cloak and another by the shirt&rdquo;; someone, pitying, may hold a cup to his mouth long enough to wet his lips but not the roof of his mouth; and a child with both parents living will drive him from the feast with blows and taunts &mdash; <em>out with you; you have no father here</em> &mdash; this, for the boy who used to eat none but the daintiest morsels, sitting on his father&rsquo;s knees. She understands her world exactly: for an orphan, status is the food supply, and the account closes the day the father dies. The Trojans, she says, call him <span class="char" data-char="astyanax" tabindex="0" role="button">Astyanax</span> &mdash; lord of the city &mdash; &ldquo;because you, O <span class="char" data-char="hector" tabindex="0" role="button">Hector</span>, were the only defence of their gates and battlements.&rdquo; In Book Six the helmet came off, and for one minute on the wall there was a man underneath the role. The city had named the baby after the job. Now the job is finished, and everything named for it &mdash; the son, the wife, the gates &mdash; is forfeit with it. She ends with the only gift she has left: his fine raiment, made by women&rsquo;s hands, useless now to a body lying naked by the ships. She will burn it in his honor, before the Trojans, men and women &mdash; an honor made entirely of smoke, which is what Troy has left to give.</p>
+
+<div class="quiz" data-answer="b">
+  <div class="quiz-kicker">Last one</div>
+  <p class="quiz-q">Andromache is weaving flowers into cloth and heating Hector&rsquo;s bath when the wail reaches her. Why does Homer build the discovery scene around the bath water?</p>
+  <div class="quiz-opts">
+    <button type="button" class="quiz-opt" data-opt="a">Ritual inverted &mdash; water meant to wash a living husband shadows the funeral washing his corpse will be denied at the ships</button>
+    <button type="button" class="quiz-opt" data-opt="b">The lag &mdash; her ordinary hour keeps running after his world has ended, and the gap between event and knowledge is where Homer puts the cruelty</button>
+    <button type="button" class="quiz-opt" data-opt="c">The callback &mdash; Book Six sent her to the loom and the household, and the poem shows her keeping that assignment at the exact moment it becomes pointless</button>
+  </div>
+  <p class="quiz-why" hidden>The inverted-ritual reading is real, and readers have felt it for millennia &mdash; bath water for a man &ldquo;beyond the reach of baths&rdquo; does shadow the washing his body won&rsquo;t get. But Homer&rsquo;s own aside points elsewhere: <em>poor woman, she knew not.</em> The horror isn&rsquo;t the water&rsquo;s future use; it&rsquo;s that she is still tending a husband who has been dead for an hour &mdash; still living inside a world that has already ended. The Book Six callback is there too (loom and bath are exactly the duties he assigned her), but it works <em>because</em> of the lag, not instead of it. Homer knows many ways to hurt you; the cruelest is information arriving late.</p>
+</div>
+
+</article>
+
+</div><!-- /main-col -->
+
+<aside class="side-col">
+<div class="side-inner">
+
+<section id="glossary-section">
+  <h2>Who&rsquo;s who</h2>
+
+  <div class="person" data-char="hector">
+    <h3>Hector</h3>
+    <p class="role">Commander of Troy</p>
+    <p>Alone outside the gate while all Troy watches from the wall. What keeps him there is not courage but shame &mdash; Polydamas will say I told you so &mdash; and when the gods cheat him, he charges anyway.</p>
+  </div>
+
+  <div class="person" data-char="achilles">
+    <h3>Achilles</h3>
+    <p class="role">Son of Peleus</p>
+    <p>He refuses covenants, refuses ransom, wishes he could eat his enemy&rsquo;s flesh raw &mdash; and takes the prophecy of his own death at the same gate without breaking stride. Patroclus&rsquo;s killer is dead; nothing is better.</p>
+  </div>
+
+  <div class="person" data-char="priam">
+    <h3>Priam</h3>
+    <p class="role">King of Troy</p>
+    <p>First to spot the gleam on the plain. He tears his gray hair on the wall, foresees his own dogs lapping his blood at his own door, and by nightfall must be held back from going alone to the killer&rsquo;s ships.</p>
+  </div>
+
+  <div class="person" data-char="hecuba">
+    <h3>Hecuba</h3>
+    <p class="role">Queen of Troy</p>
+    <p>She bares the breast that nursed Hector and asks him to honor it. It moves him no more than his father&rsquo;s tears, and she is left to fling her veil and lead the city&rsquo;s wailing.</p>
+  </div>
+
+  <div class="person" data-char="andromache">
+    <h3>Andromache</h3>
+    <p class="role">Hector&rsquo;s wife</p>
+    <p>The last in Troy to know. She is at the loom weaving flowers, with bath water heating for her husband, when the wail reaches her &mdash; and her lament is not for his glory but for their son&rsquo;s future.</p>
+  </div>
+
+  <div class="person" data-char="athena">
+    <h3>Athena</h3>
+    <p class="role">Goddess of wisdom and war</p>
+    <p>She wears Deiphobus&rsquo;s shape to talk Hector into standing, then hands Achilles back his missed spear. The climactic duel of Western literature is decided by her fraud.</p>
+  </div>
+
+  <div class="person" data-char="apollo">
+    <h3>Apollo</h3>
+    <p class="role">God of the silver bow</p>
+    <p>He spends the first half of the chapter saving Hector &mdash; playing decoy, feeding strength into his legs &mdash; and the moment the scales tip, he leaves. Gods do not stay past the verdict.</p>
+  </div>
+
+  <div class="person" data-char="zeus">
+    <h3>Zeus</h3>
+    <p class="role">King of the gods</p>
+    <p>He pities Hector, who burned so many thigh-bones in his honor, and wonders aloud about saving him. Then he hangs the golden scales, and lets what sinks, sink.</p>
+  </div>
+
+  <div class="person" data-char="deiphobus">
+    <h3>Deiphobus</h3>
+    <p class="role">Hector&rsquo;s brother</p>
+    <p>The real one never leaves the city. Athena borrows his shape and voice to promise Hector a second spear, and when Hector turns and calls for one, no man is there.</p>
+  </div>
+
+  <div class="person" data-char="astyanax">
+    <h3>Astyanax</h3>
+    <p class="role">Hector&rsquo;s infant son</p>
+    <p>The baby who screamed at the helmet in Book Six. His mother maps his orphan future in small humiliations &mdash; a pulled cloak, a sip that wets the lips, a child shouting &ldquo;you have no father here.&rdquo;</p>
+  </div>
+
+  <div class="person" data-char="patroclus">
+    <h3>Patroclus</h3>
+    <p class="role">The debt being paid</p>
+    <p>Dead since Book Sixteen, he governs every line Achilles speaks. Hector dies wearing the armor he stripped from Patroclus&rsquo;s body &mdash; and the wound goes into the one gap it leaves open.</p>
+  </div>
+
+  <div class="person" data-char="polydamas">
+    <h3>Polydamas</h3>
+    <p class="role">The feared told-you-so</p>
+    <p>He advised retreat behind the walls; Hector overruled him and lost the army. He never appears in this book. He doesn&rsquo;t have to &mdash; the reproach Hector imagines from him is what holds Hector outside the gate.</p>
+  </div>
+</section>
+
+<section id="map-section">
+  <h2>The relationship map</h2>
+  <p class="map-note">Click a name in the essay, the glossary, or a box below to trace a character&rsquo;s connections. Esc or the empty background clears it.</p>
+  <div id="map-chip" aria-live="polite">
+    <span id="map-chip-label"></span>
+    <button type="button" id="map-chip-clear">clear</button>
+  </div>
+  <div class="person" id="char-detail" hidden aria-live="polite"></div>
+
+  <svg id="relmap" viewBox="0 0 880 600" role="img" aria-label="Relationship map of Iliad Book Twenty-Two: Achilles duels Hector on the plain while Priam, Hecuba, and Andromache watch from the wall; Athena tricks Hector wearing the shape of Deiphobus">
+    <defs>
+      <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+        <path d="M 0 0 L 10 5 L 0 10 z" fill="#5c4f41"></path>
+      </marker>
+    </defs>
+
+    <text class="band-label" x="40" y="40">THE WALL</text>
+    <text class="band-label" x="760" y="588">THE PLAIN</text>
+
+    <!-- edges -->
+    <path class="edge" data-chars="priam,hecuba" d="M 99 114 L 99 180"></path>
+    <text class="edge-label" data-chars="priam,hecuba" x="108" y="152">king and queen</text>
+
+    <path class="edge" data-chars="priam,hector" d="M 140 114 L 300 430" marker-end="url(#arrow)"></path>
+    <text class="edge-label" data-chars="priam,hector" x="200" y="168">begs from the wall</text>
+
+    <path class="edge" data-chars="hecuba,hector" d="M 158 226 L 285 438" marker-end="url(#arrow)"></path>
+    <text class="edge-label" data-chars="hecuba,hector" x="228" y="288">bares the breast</text>
+
+    <path class="edge" data-chars="andromache,hector" d="M 158 334 L 282 448"></path>
+    <text class="edge-label" data-chars="andromache,hector" x="240" y="398">the bath water</text>
+
+    <path class="edge" data-chars="zeus,hector" d="M 440 114 L 355 428"></path>
+    <text class="edge-label" data-chars="zeus,hector" x="408" y="270">the golden scales</text>
+
+    <path class="edge" data-chars="zeus,athena" d="M 518 108 L 700 190"></path>
+    <text class="edge-label" data-chars="zeus,athena" x="575" y="132">do as you will</text>
+
+    <path class="edge" data-chars="athena,deiphobus" d="M 759 180 L 759 114" marker-end="url(#arrow)"></path>
+    <text class="edge-label" data-chars="athena,deiphobus" x="768" y="152">wears his shape</text>
+
+    <path class="edge" data-chars="athena,hector" d="M 700 220 L 398 440" marker-end="url(#arrow)"></path>
+    <text class="edge-label loud" data-chars="athena,hector" x="560" y="306" text-anchor="middle">THE TRICK</text>
+
+    <path class="edge" data-chars="athena,achilles" d="M 705 224 L 645 462" marker-end="url(#arrow)"></path>
+    <text class="edge-label" data-chars="athena,achilles" x="650" y="372" text-anchor="end">returns the spear</text>
+
+    <path class="edge" data-chars="apollo,hector" d="M 700 322 L 400 440"></path>
+    <text class="edge-label" data-chars="apollo,hector" x="560" y="356" text-anchor="middle">leaves him</text>
+
+    <path class="edge" data-chars="apollo,achilles" d="M 750 334 L 685 462"></path>
+    <text class="edge-label" data-chars="apollo,achilles" x="722" y="402">the decoy</text>
+
+    <path class="edge" data-chars="hector,achilles" d="M 398 462 L 580 490"></path>
+    <text class="edge-label loud" data-chars="hector,achilles" x="489" y="452" text-anchor="middle">THE DUEL</text>
+
+    <!-- nodes -->
+    <g class="node" id="node-priam" data-node="priam" tabindex="0" role="button" aria-label="Priam — highlight connections">
+      <rect x="40" y="70" width="118" height="44" rx="8"></rect>
+      <text x="99" y="97" text-anchor="middle">Priam</text>
+    </g>
+    <g class="node" id="node-hecuba" data-node="hecuba" tabindex="0" role="button" aria-label="Hecuba — highlight connections">
+      <rect x="40" y="180" width="118" height="44" rx="8"></rect>
+      <text x="99" y="207" text-anchor="middle">Hecuba</text>
+    </g>
+    <g class="node" id="node-andromache" data-node="andromache" tabindex="0" role="button" aria-label="Andromache — highlight connections">
+      <rect x="40" y="290" width="118" height="44" rx="8"></rect>
+      <text x="99" y="317" text-anchor="middle">Andromache</text>
+    </g>
+    <g class="node divine" id="node-zeus" data-node="zeus" tabindex="0" role="button" aria-label="Zeus — highlight connections">
+      <rect x="400" y="70" width="118" height="44" rx="8"></rect>
+      <text x="459" y="97" text-anchor="middle">Zeus</text>
+    </g>
+    <g class="node" id="node-deiphobus" data-node="deiphobus" tabindex="0" role="button" aria-label="Deiphobus — highlight connections">
+      <rect x="700" y="70" width="118" height="44" rx="8"></rect>
+      <text x="759" y="97" text-anchor="middle">Deiphobus</text>
+    </g>
+    <g class="node divine" id="node-athena" data-node="athena" tabindex="0" role="button" aria-label="Athena — highlight connections">
+      <rect x="700" y="180" width="118" height="44" rx="8"></rect>
+      <text x="759" y="207" text-anchor="middle">Athena</text>
+    </g>
+    <g class="node divine" id="node-apollo" data-node="apollo" tabindex="0" role="button" aria-label="Apollo — highlight connections">
+      <rect x="700" y="290" width="118" height="44" rx="8"></rect>
+      <text x="759" y="317" text-anchor="middle">Apollo</text>
+    </g>
+    <g class="node" id="node-hector" data-node="hector" tabindex="0" role="button" aria-label="Hector — highlight connections">
+      <rect x="280" y="430" width="118" height="44" rx="8"></rect>
+      <text x="339" y="457" text-anchor="middle">Hector</text>
+    </g>
+    <g class="node" id="node-achilles" data-node="achilles" tabindex="0" role="button" aria-label="Achilles — highlight connections">
+      <rect x="580" y="460" width="118" height="44" rx="8"></rect>
+      <text x="639" y="487" text-anchor="middle">Achilles</text>
+    </g>
+  </svg>
+</section>
+
+<section id="decoder-section">
+  <h2>Decoder: Butler&rsquo;s Roman names</h2>
+  <p class="map-note">Butler translated in 1898 using Roman names for the gods &mdash; and calls Paris &ldquo;Alexandrus.&rdquo; This retelling uses the Greek ones.</p>
+  <table class="decoder">
+    <thead><tr><th>Butler writes</th><th>This page says</th></tr></thead>
+    <tbody>
+      <tr><td>Jove</td><td>Zeus</td></tr>
+      <tr><td>Minerva</td><td>Athena</td></tr>
+      <tr><td>Mars</td><td>Ares</td></tr>
+      <tr><td>Vulcan</td><td>Hephaestus</td></tr>
+      <tr><td>Venus</td><td>Aphrodite</td></tr>
+      <tr><td>Saturn</td><td>Cronus</td></tr>
+      <tr><td>Alexandrus</td><td>Paris (same man)</td></tr>
+    </tbody>
+  </table>
+</section>
+
+</div><!-- /side-inner -->
+</aside>
+
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  var CHARACTERS = {
+    hector: {
+      name: 'Hector',
+      role: 'Commander of Troy',
+      bio: "Alone outside the gate while all Troy watches from the wall. What keeps him there is not courage but shame — Polydamas will say I told you so — and when the gods cheat him, he charges anyway.",
+      hasNode: true
+    },
+    achilles: {
+      name: 'Achilles',
+      role: 'Son of Peleus',
+      bio: "He refuses covenants, refuses ransom, wishes he could eat his enemy's flesh raw — and takes the prophecy of his own death at the same gate without breaking stride. Patroclus's killer is dead; nothing is better.",
+      hasNode: true
+    },
+    priam: {
+      name: 'Priam',
+      role: 'King of Troy',
+      bio: "First to spot the gleam on the plain. He tears his gray hair on the wall, foresees his own dogs lapping his blood at his own door, and by nightfall must be held back from going alone to the killer's ships.",
+      hasNode: true
+    },
+    hecuba: {
+      name: 'Hecuba',
+      role: 'Queen of Troy',
+      bio: "She bares the breast that nursed Hector and asks him to honor it. It moves him no more than his father's tears, and she is left to fling her veil and lead the city's wailing.",
+      hasNode: true
+    },
+    andromache: {
+      name: 'Andromache',
+      role: "Hector's wife",
+      bio: "The last in Troy to know. She is at the loom weaving flowers, with bath water heating for her husband, when the wail reaches her — and her lament is not for his glory but for their son's future.",
+      hasNode: true
+    },
+    athena: {
+      name: 'Athena',
+      role: 'Goddess of wisdom and war',
+      bio: "She wears Deiphobus's shape to talk Hector into standing, then hands Achilles back his missed spear. The climactic duel of Western literature is decided by her fraud.",
+      hasNode: true
+    },
+    apollo: {
+      name: 'Apollo',
+      role: 'God of the silver bow',
+      bio: "He spends the first half of the chapter saving Hector — playing decoy, feeding strength into his legs — and the moment the scales tip, he leaves. Gods do not stay past the verdict.",
+      hasNode: true
+    },
+    zeus: {
+      name: 'Zeus',
+      role: 'King of the gods',
+      bio: "He pities Hector, who burned so many thigh-bones in his honor, and wonders aloud about saving him. Then he hangs the golden scales, and lets what sinks, sink.",
+      hasNode: true
+    },
+    deiphobus: {
+      name: 'Deiphobus',
+      role: "Hector's brother",
+      bio: "The real one never leaves the city. Athena borrows his shape and voice to promise Hector a second spear, and when Hector turns and calls for one, no man is there.",
+      hasNode: true
+    },
+    astyanax: {
+      name: 'Astyanax',
+      role: "Hector's infant son",
+      bio: "The baby who screamed at the helmet in Book Six. His mother maps his orphan future in small humiliations — a pulled cloak, a sip that wets the lips, a child shouting 'you have no father here.'",
+      hasNode: false
+    },
+    patroclus: {
+      name: 'Patroclus',
+      role: 'The debt being paid',
+      bio: "Dead since Book Sixteen, he governs every line Achilles speaks. Hector dies wearing the armor he stripped from Patroclus's body — and the wound goes into the one gap it leaves open.",
+      hasNode: false
+    },
+    polydamas: {
+      name: 'Polydamas',
+      role: 'The feared told-you-so',
+      bio: "He advised retreat behind the walls; Hector overruled him and lost the army. He never appears in this book. He doesn't have to — the reproach Hector imagines from him is what holds Hector outside the gate.",
+      hasNode: false
+    }
+  };
+
+  var reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  var svg = document.getElementById('relmap');
+  var mapSection = document.getElementById('map-section');
+  var chip = document.getElementById('map-chip');
+  var chipLabel = document.getElementById('map-chip-label');
+  var chipClear = document.getElementById('map-chip-clear');
+
+  /* ---------- Tooltip ---------- */
+
+  var tip = document.createElement('div');
+  tip.id = 'char-tooltip';
+  tip.setAttribute('role', 'tooltip');
+  tip.hidden = true;
+  document.body.appendChild(tip);
+
+  var showTimer = null;
+  var hideTimer = null;
+  var tipTarget = null;
+
+  function renderTip(id) {
+    var c = CHARACTERS[id];
+    if (!c) return false;
+    var html =
+      '<div class="tip-name">' + c.name + '</div>' +
+      '<div class="tip-role">' + c.role + '</div>' +
+      '<div class="tip-bio">' + c.bio + '</div>';
+    if (c.hasNode) {
+      html += '<div class="tip-hint">Click to see them on the map</div>';
+    }
+    tip.innerHTML = html;
+    return true;
+  }
+
+  function positionTip(target) {
+    var r = target.getBoundingClientRect();
+    tip.style.left = '0px';
+    tip.style.top = '0px';
+    var tw = tip.offsetWidth;
+    var th = tip.offsetHeight;
+    var left = r.left + r.width / 2 - tw / 2;
+    left = Math.max(8, Math.min(left, window.innerWidth - tw - 8));
+    var top = r.top - th - 10;
+    if (top < 8) top = r.bottom + 10;
+    if (top + th > window.innerHeight - 8) {
+      top = Math.max(8, window.innerHeight - th - 8);
+    }
+    tip.style.left = left + 'px';
+    tip.style.top = top + 'px';
+  }
+
+  function showTip(target) {
+    var id = target.getAttribute('data-char');
+    if (!renderTip(id)) return;
+    if (tipTarget && tipTarget !== target) {
+      tipTarget.removeAttribute('aria-describedby');
+    }
+    tipTarget = target;
+    tip.hidden = false;
+    positionTip(target);
+    target.setAttribute('aria-describedby', 'char-tooltip');
+  }
+
+  function hideTip() {
+    clearTimeout(showTimer);
+    clearTimeout(hideTimer);
+    tip.hidden = true;
+    if (tipTarget) {
+      tipTarget.removeAttribute('aria-describedby');
+      tipTarget = null;
+    }
+  }
+
+  /* ---------- Map highlight ---------- */
+
+  var detail = document.getElementById('char-detail');
+  var glossaryEntries = Array.prototype.slice.call(
+    document.querySelectorAll('#glossary-section .person[data-char]')
+  );
+
+  function clearHighlight() {
+    svg.classList.remove('dimmed');
+    svg.querySelectorAll('.lit').forEach(function (el) { el.classList.remove('lit'); });
+    svg.querySelectorAll('.sel').forEach(function (el) { el.classList.remove('sel'); });
+    chip.classList.remove('on');
+    detail.hidden = true;
+    glossaryEntries.forEach(function (p) { p.hidden = false; });
+  }
+
+  function highlightChar(id) {
+    var c = CHARACTERS[id];
+    if (!c || !c.hasNode) return;
+    clearHighlight();
+    svg.classList.add('dimmed');
+    var lit = { };
+    lit[id] = true;
+    svg.querySelectorAll('[data-chars]').forEach(function (el) {
+      var chars = el.getAttribute('data-chars').split(',');
+      if (chars.indexOf(id) !== -1) {
+        el.classList.add('lit');
+        chars.forEach(function (ch) { lit[ch] = true; });
+      }
+    });
+    Object.keys(lit).forEach(function (ch) {
+      var node = document.getElementById('node-' + ch);
+      if (node) node.classList.add('lit');
+    });
+    var selNode = document.getElementById('node-' + id);
+    if (selNode) selNode.classList.add('sel');
+    chipLabel.textContent = 'Showing: ' + c.name + ' —';
+    chip.classList.add('on');
+    detail.innerHTML =
+      '<h3>' + c.name + '</h3>' +
+      '<p class="role">' + c.role + '</p>' +
+      '<p>' + c.bio + '</p>';
+    detail.hidden = false;
+    // Glossary shows only the characters in the highlighted relationships.
+    glossaryEntries.forEach(function (p) {
+      p.hidden = !lit[p.getAttribute('data-char')];
+    });
+  }
+
+  var wideLayout = window.matchMedia('(min-width: 920px)');
+  var sideInner = document.querySelector('.side-inner');
+
+  function scrollToMap() {
+    var behavior = reducedMotion.matches ? 'auto' : 'smooth';
+    if (wideLayout.matches) {
+      // Map is pinned at the top of the sticky sidebar; just make sure
+      // the sidebar's own scroll hasn't pushed it out of view.
+      sideInner.scrollTo({ top: 0, behavior: behavior });
+      return;
+    }
+    mapSection.scrollIntoView({ behavior: behavior, block: 'center' });
+  }
+
+  function activate(id, scroll) {
+    var c = CHARACTERS[id];
+    if (!c || !c.hasNode) return;
+    hideTip();
+    highlightChar(id);
+    if (scroll) scrollToMap();
+  }
+
+  /* ---------- Essay spans ---------- */
+
+  var touchArmed = null;
+
+  document.querySelectorAll('.char').forEach(function (span) {
+    span.addEventListener('mouseenter', function () {
+      clearTimeout(hideTimer);
+      clearTimeout(showTimer);
+      showTimer = setTimeout(function () { showTip(span); }, 150);
+    });
+
+    span.addEventListener('mouseleave', function () {
+      clearTimeout(showTimer);
+      clearTimeout(hideTimer);
+      hideTimer = setTimeout(function () {
+        if (document.activeElement !== span || !tipTarget) hideTip();
+      }, 80);
+    });
+
+    span.addEventListener('focus', function () { showTip(span); });
+    span.addEventListener('blur', function () { hideTip(); });
+
+    span.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar') {
+        e.preventDefault();
+        activate(span.getAttribute('data-char'), true);
+      }
+    });
+
+    // Touch: first tap shows tooltip, second tap activates.
+    span.addEventListener('touchend', function (e) {
+      if (touchArmed !== span) {
+        e.preventDefault();
+        touchArmed = span;
+        clearTimeout(showTimer);
+        showTip(span);
+      } else {
+        touchArmed = null;
+      }
+    });
+
+    span.addEventListener('click', function () {
+      activate(span.getAttribute('data-char'), true);
+    });
+  });
+
+  document.addEventListener('touchstart', function (e) {
+    if (touchArmed && !touchArmed.contains(e.target)) {
+      touchArmed = null;
+      hideTip();
+    }
+  }, { passive: true });
+
+  /* ---------- Glossary entries ---------- */
+
+  document.querySelectorAll('.person').forEach(function (entry) {
+    var id = entry.getAttribute('data-char');
+    var c = CHARACTERS[id];
+    if (!c || !c.hasNode) return;
+    entry.classList.add('mappable');
+    entry.setAttribute('tabindex', '0');
+    entry.setAttribute('role', 'button');
+    entry.setAttribute('aria-label', c.name + ' — show on the relationship map');
+    entry.addEventListener('click', function () { activate(id, true); });
+    entry.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar') {
+        e.preventDefault();
+        activate(id, true);
+      }
+    });
+  });
+
+  /* ---------- Map nodes and background ---------- */
+
+  svg.querySelectorAll('.node').forEach(function (node) {
+    var id = node.getAttribute('data-node');
+    node.addEventListener('click', function (e) {
+      e.stopPropagation();
+      activate(id, false);
+    });
+    node.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar') {
+        e.preventDefault();
+        activate(id, false);
+      }
+    });
+  });
+
+  svg.addEventListener('click', function (e) {
+    if (!e.target.closest('.node')) clearHighlight();
+  });
+
+  chipClear.addEventListener('click', clearHighlight);
+
+  /* ---------- Quizzes: gate the essay, track progress ---------- */
+
+  var PROGRESS_KEY = 'iliad:' +
+    (location.pathname.split('/').pop() || 'book').replace('.html', '');
+  var quizzes = Array.prototype.slice.call(document.querySelectorAll('.quiz'));
+  var article = document.querySelector('article');
+  var progressBox = document.getElementById('chapter-progress');
+  var progressLabel = document.getElementById('chapter-progress-label');
+  var progressFill = document.querySelector('#chapter-progress .fill');
+
+  function loadPassed() {
+    try {
+      var arr = JSON.parse(localStorage.getItem(PROGRESS_KEY) || '[]');
+      return Array.isArray(arr) ? arr : [];
+    } catch (e) { return []; }
+  }
+  function savePassed() {
+    try { localStorage.setItem(PROGRESS_KEY, JSON.stringify(passed)); }
+    catch (e) { /* private browsing: progress just won't persist */ }
+  }
+
+  var passed = loadPassed();
+
+  var hint = document.createElement('div');
+  hint.className = 'continue-hint';
+  hint.textContent = 'Pick the right answer above to unlock the rest of the chapter.';
+
+  function updateProgress() {
+    var total = quizzes.length;
+    var n = Math.min(passed.length, total);
+    progressFill.style.width = (total ? Math.round((n / total) * 100) : 100) + '%';
+    if (n === total) {
+      progressBox.classList.add('done');
+      progressLabel.textContent = 'Chapter complete — all ' + total + ' checkpoints passed';
+    } else {
+      progressBox.classList.remove('done');
+      progressLabel.textContent = 'Progress: ' + n + ' of ' + total + ' checkpoints';
+    }
+    renderRail();
+  }
+
+  // Everything after the first unpassed quiz stays hidden until the
+  // reader picks that quiz's correct answer.
+  function applyGate() {
+    var firstOpen = -1;
+    for (var i = 0; i < quizzes.length; i++) {
+      if (passed.indexOf(i) === -1) { firstOpen = i; break; }
+    }
+    if (hint.parentNode) hint.parentNode.removeChild(hint);
+    var lock = false;
+    Array.prototype.slice.call(article.children).forEach(function (el) {
+      el.classList.toggle('locked', lock);
+      if (firstOpen !== -1 && el === quizzes[firstOpen]) lock = true;
+    });
+    if (firstOpen !== -1) {
+      quizzes[firstOpen].insertAdjacentElement('afterend', hint);
+    }
+    updateProgress();
+  }
+
+  function renderAnswered(quiz) {
+    quiz.classList.add('answered');
+    var right = quiz.querySelector('[data-opt="' + quiz.getAttribute('data-answer') + '"]');
+    if (right) right.classList.add('right');
+    quiz.querySelectorAll('.quiz-opt').forEach(function (b) {
+      b.setAttribute('aria-disabled', 'true');
+    });
+    var why = quiz.querySelector('.quiz-why');
+    why.hidden = false;
+    why.setAttribute('role', 'status');
+  }
+
+  quizzes.forEach(function (quiz, index) {
+    if (passed.indexOf(index) !== -1) renderAnswered(quiz);
+    var answer = quiz.getAttribute('data-answer');
+    quiz.querySelectorAll('.quiz-opt').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        if (quiz.classList.contains('answered')) return;
+        if (btn.getAttribute('data-opt') === answer) {
+          renderAnswered(quiz);
+          if (passed.indexOf(index) === -1) passed.push(index);
+          savePassed();
+          applyGate();
+        } else {
+          btn.classList.add('wrong-pick');
+        }
+      });
+    });
+  });
+
+  /* ---------- Checkpoint rail ---------- */
+
+  var railCount = document.getElementById('rail-count');
+  var railTrack = document.getElementById('rail-track');
+  var railDots = quizzes.map(function (quiz, i) {
+    var dot = document.createElement('button');
+    dot.type = 'button';
+    dot.className = 'rail-dot';
+    dot.textContent = i + 1;
+    dot.addEventListener('click', function () {
+      if (quiz.classList.contains('locked')) return;
+      quiz.scrollIntoView({
+        behavior: reducedMotion.matches ? 'auto' : 'smooth',
+        block: 'center'
+      });
+    });
+    railTrack.appendChild(dot);
+    return dot;
+  });
+
+  function renderRail() {
+    quizzes.forEach(function (quiz, i) {
+      var dot = railDots[i];
+      dot.classList.remove('passed', 'current');
+      var state = 'locked';
+      if (passed.indexOf(i) !== -1) {
+        dot.classList.add('passed');
+        state = 'passed';
+      } else if (!quiz.classList.contains('locked')) {
+        dot.classList.add('current');
+        state = 'current';
+      }
+      dot.setAttribute('aria-label', 'Checkpoint ' + (i + 1) + ' — ' + state);
+      dot.setAttribute('aria-disabled', state === 'locked' ? 'true' : 'false');
+    });
+    var n = Math.min(passed.length, quizzes.length);
+    railCount.textContent = n + '/' + quizzes.length;
+    railCount.classList.toggle('done', n === quizzes.length);
+  }
+
+  applyGate();
+
+  /* ---------- Global ---------- */
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') {
+      hideTip();
+      clearHighlight();
+    }
+  });
+
+  window.addEventListener('scroll', function () {
+    if (!tip.hidden && tipTarget) positionTip(tipTarget);
+  }, { passive: true });
+
+  window.addEventListener('resize', function () {
+    if (!tip.hidden && tipTarget) positionTip(tipTarget);
+  });
+})();
+</script>
+</body>
+</html>
