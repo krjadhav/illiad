@@ -1,10 +1,28 @@
 found illiad confusing so this is my attempt to better understand it.
 
-Start at [index.html](index.html) — all 24 books, reading progress (stored in your browser), quizzes that unlock each chapter as you go.
+Start at [index.html](index.html) — all 24 books, reading progress (stored in your browser), quizzes that unlock each chapter as you go, and short previews for each book.
 
-- [book_1.html](book_1.html) — Book 1: the plague, the quarrel, Thetis calls in her favor
-- [book_2.html](book_2.html) — Book 2: the lying dream, the stampede for the ships, the Catalogue
-- [book_3.html](book_3.html) — Book 3: the truce, the duel for Helen, Aphrodite's rescue
-- [book_4.html](book_4.html) — Book 4: the gods trade cities, Pandarus' arrow, the first deaths
-- [book_5.html](book_5.html) — Book 5: Diomedes' day — two Olympians go home bleeding
-- [book_6.html](book_6.html) — Book 6: the armor swap, the refused robe, Hector and Andromache
+- [book_1.html](book_1.html) — Book 1: Apollo sends a plague after Agamemnon insults Chryses. Agamemnon gives up Chryseis, seizes Briseis from Achilles, and Achilles withdraws from the war while Thetis gets Zeus to make the Greeks pay for the insult.
+- [book_2.html](book_2.html) — Book 2: Zeus pushes the Greeks toward disaster with a lying dream. Agamemnon tests the army, Odysseus stops the rush home, Thersites is beaten down, and the poem musters both armies in the Catalogue of Ships.
+- [book_3.html](book_3.html) — Book 3: Paris offers single combat with Menelaus, and the war briefly looks solvable. Menelaus wins the duel in practice, but Aphrodite removes Paris from danger and the promised settlement collapses before it can become peace.
+- [book_4.html](book_4.html) — Book 4: The gods decide Troy must still fall, so Athena tricks Pandarus into breaking the truce with an arrow at Menelaus. The wound is minor, but the oath is broken, and open battle begins again.
+- [book_5.html](book_5.html) — Book 5: Diomedes has his great day of slaughter under Athena's protection. He kills Pandarus, wounds Aeneas, drives Aphrodite and Ares bleeding from the field, and shows how thin the line is between heroic courage and divine permission.
+- [book_6.html](book_6.html) — Book 6: The gods step back and the human costs come forward. Diomedes and Glaucus honor an old guest-friendship, Troy's women fail to move Athena, and Hector leaves Andromache and Astyanax because shame keeps him in the role of defender.
+- [book_7.html](book_7.html) — Book 7: Hector and Ajax fight to a draw and exchange gifts, giving both sides a way to claim honor. The armies pause to burn the dead, the Greeks build their wall, and Paris refuses the one concession that could end the war.
+- [book_8.html](book_8.html) — Book 8: Zeus bans divine interference, weighs the day for Troy, and drives the Greeks back toward the ships. Hera and Athena are checked, Hector camps on the plain, and the Trojan fires make the Greek danger visible all night.
+- [book_9.html](book_9.html) — Book 9: Agamemnon sends Odysseus, Phoenix, and Ajax with gifts and arguments for Achilles. Each appeal fails because Achilles no longer trusts honor as payment, and he refuses to fight until the Trojans reach the ships.
+- [book_10.html](book_10.html) — Book 10: Both armies try espionage in the dark. Odysseus and Diomedes catch Dolon, extract the Trojan layout, kill him anyway, then raid the Thracian camp and return with Rhesus' horses.
+- [book_11.html](book_11.html) — Book 11: Agamemnon dominates the morning battle until he is wounded, and then the Greek leaders fall one by one. Nestor sends Patroclus back toward Achilles with news that starts turning pity into action.
+- [book_12.html](book_12.html) — Book 12: The Trojans press against the Greek wall and ditch. Polydamas reads a bad omen and counsels caution, Hector rejects him, Sarpedon attacks the gate, and Hector smashes the wall open with a stone.
+- [book_13.html](book_13.html) — Book 13: With Zeus looking away, Poseidon secretly stiffens the Greek defense at the ships. Idomeneus and Meriones shine in scattered fighting, and Hector finally listens to Polydamas long enough to regroup.
+- [book_14.html](book_14.html) — Book 14: The wounded Greek leaders consider flight, but Odysseus and Diomedes keep them from it. Hera seduces Zeus and Sleep disables him, letting Poseidon help the Greeks drive the Trojans back and wound Hector.
+- [book_15.html](book_15.html) — Book 15: Zeus wakes, restores his plan, and orders Poseidon off the field. Apollo revives Hector and breaks Greek resistance until Hector reaches the ships and seizes a prow for burning.
+- [book_16.html](book_16.html) — Book 16: Patroclus borrows Achilles' armor, saves the ships, kills Sarpedon, and ignores Achilles' limit by driving on toward Troy. Apollo strips him of force, Euphorbus wounds him, and Hector kills him.
+- [book_17.html](book_17.html) — Book 17: The armies fight over Patroclus' body while Hector wears Achilles' armor. Menelaus sends Antilochus to warn Achilles, and the Ajaxes hold the Trojans off long enough for the Greeks to carry the corpse away.
+- [book_18.html](book_18.html) — Book 18: Achilles learns Patroclus is dead and commits himself to returning, though it means his own early death. Thetis gets Hephaestus to forge new armor, including the great shield that holds a whole world beside the war.
+- [book_19.html](book_19.html) — Book 19: Achilles and Agamemnon formally reconcile, but neither quite owns the original damage. Odysseus forces the public ritual and the meal, Briseis mourns Patroclus, and Achilles arms while his horse foretells death.
+- [book_20.html](book_20.html) — Book 20: Zeus releases the gods back onto the battlefield because Achilles is too dangerous unchecked. Poseidon rescues Aeneas, Apollo protects Hector, and Achilles turns the Trojan rout into a killing storm.
+- [book_21.html](book_21.html) — Book 21: Achilles slaughters so many Trojans that the river Scamander rises against him. Hera sends Hephaestus' fire to subdue the river, the gods brawl absurdly, and Apollo distracts Achilles long enough for Troy to shut its gates.
+- [book_22.html](book_22.html) — Book 22: Hector stays outside Troy, runs from Achilles, is deceived by Athena, and dies when the divine setup leaves him without help. Achilles refuses the body bargain, drags Hector behind his chariot, and Troy learns what it has lost.
+- [book_23.html](book_23.html) — Book 23: Patroclus is buried with terrible honors, including twelve Trojan prisoners. Achilles then hosts funeral games where prize disputes are settled with grace, turning the honor system that broke the army into something briefly humane.
+- [book_24.html](book_24.html) — Book 24: The gods force the question of Hector's body. Priam, guided by Hermes, enters Achilles' hut, moves him by invoking Peleus, receives Hector back for ransom, and Troy closes the poem by burying its defender.
