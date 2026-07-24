@@ -1,0 +1,1306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Funeral Games — Iliad, Book Twenty-Three</title>
+<style>
+  :root {
+    --bg: #16110c;
+    --surface: #221c17;
+    --text: #e7dfd3;
+    --muted: #a89880;
+    --faint: #3b3229;
+    --clay: #c0714f;
+    --serif: Georgia, 'Times New Roman', serif;
+    --sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { background: var(--bg); }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--serif);
+    line-height: 1.68;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .page {
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 64px 20px 96px;
+  }
+
+  /* Wide screens: essay left, sticky map + glossary + decoder right.
+     Breakpoint is deliberately low (920px) so the sidebar survives
+     browser zoom — zooming shrinks the CSS-pixel viewport, and at
+     1100px the layout collapsed to single-column at ~150% zoom. */
+  @media (min-width: 920px) {
+    .page {
+      display: grid;
+      max-width: 1300px;
+      grid-template-columns: 56px minmax(0, 680px) minmax(300px, 430px);
+      gap: clamp(28px, 4vw, 60px);
+      /* No align-items: start — the sidebar column must stretch to full
+         row height or position: sticky inside it has no room to travel. */
+    }
+    .side-col { min-width: 0; }
+    .side-inner {
+      position: sticky;
+      top: 20px;
+      max-height: calc(100vh - 40px);
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      padding-right: 6px;
+      scrollbar-width: thin;
+      scrollbar-color: var(--faint) transparent;
+    }
+    .side-inner #map-section { order: -1; margin-top: 0; }
+    .side-inner h2 { font-size: 17px; margin: 24px 0 10px; }
+    .side-inner .map-note { font-size: 12px; }
+    .side-inner .person { padding: 10px 12px; margin-bottom: 8px; }
+    .side-inner .person h3 { font-size: 15px; }
+    .side-inner .person .role { font-size: 10.5px; margin-bottom: 3px; }
+    .side-inner .person p:last-child { font-size: 13.5px; }
+    .side-inner table.decoder { font-size: 13px; }
+    .side-inner table.decoder th, .side-inner table.decoder td { padding: 6px 10px; }
+  }
+
+  header { margin-bottom: 40px; }
+
+  .book-nav {
+    font-family: var(--sans);
+    font-size: 13px;
+    margin-bottom: 20px;
+  }
+  .book-nav a {
+    color: var(--muted);
+    text-decoration: none;
+  }
+  .book-nav a:hover { color: var(--clay); }
+
+  .kicker {
+    font-family: var(--sans);
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--clay);
+    margin-bottom: 14px;
+  }
+
+  h1 {
+    font-size: 40px;
+    line-height: 1.15;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    margin-bottom: 12px;
+  }
+
+  .subtitle {
+    font-size: 19px;
+    color: var(--muted);
+    font-style: italic;
+  }
+
+  hr.rule {
+    border: none;
+    border-top: 1px solid var(--faint);
+    margin: 36px 0;
+  }
+
+  article { font-size: 19px; }
+  article p { margin-bottom: 1.35em; }
+  article em { font-style: italic; }
+
+  h2 {
+    font-size: 26px;
+    margin: 48px 0 18px;
+    letter-spacing: -0.01em;
+  }
+
+  /* Character references in the essay */
+  .char {
+    cursor: pointer;
+    text-decoration: underline dotted;
+    text-decoration-color: color-mix(in srgb, var(--clay) 60%, transparent);
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+  }
+  .char:hover { text-decoration-color: var(--clay); }
+  .char:focus-visible {
+    outline: 1px dashed var(--clay);
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+
+  /* Quizzes */
+  .quiz {
+    margin: 2em 0;
+    padding: 16px 18px 14px;
+    background: var(--surface);
+    border: 1px solid var(--faint);
+    border-left: 3px solid var(--clay);
+    border-radius: 8px;
+    font-family: var(--sans);
+  }
+  .quiz-kicker {
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--clay);
+    margin-bottom: 8px;
+  }
+  .quiz-q {
+    font-family: var(--serif);
+    font-size: 17px;
+    line-height: 1.45;
+    margin-bottom: 12px;
+  }
+  .quiz-opt {
+    display: block;
+    width: 100%;
+    text-align: left;
+    font-family: var(--sans);
+    font-size: 14px;
+    line-height: 1.45;
+    color: var(--text);
+    background: #2a221b;
+    border: 1px solid var(--faint);
+    border-radius: 6px;
+    padding: 9px 12px;
+    margin-bottom: 8px;
+    cursor: pointer;
+  }
+  .quiz-opt:hover { border-color: var(--clay); }
+  .quiz-opt:focus-visible {
+    outline: 1px dashed var(--clay);
+    outline-offset: 2px;
+  }
+  .quiz.answered .quiz-opt { cursor: default; opacity: 0.5; }
+  .quiz.answered .quiz-opt.right {
+    opacity: 1;
+    border-color: var(--clay);
+    background: #32271d;
+  }
+  .quiz.answered .quiz-opt.right::before { content: "\2713\00a0\00a0"; color: var(--clay); }
+  .quiz.answered .quiz-opt.wrong-pick {
+    opacity: 1;
+    border-style: dashed;
+  }
+  .quiz.answered .quiz-opt.wrong-pick::before { content: "\2717\00a0\00a0"; color: var(--muted); }
+  .quiz-why {
+    font-size: 14px;
+    color: var(--muted);
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid var(--faint);
+  }
+
+  /* Reading progress + gating */
+  #chapter-progress {
+    font-family: var(--sans);
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 16px;
+    max-width: 420px;
+  }
+  #chapter-progress.done { color: var(--clay); }
+  #chapter-progress .bar {
+    height: 4px;
+    background: var(--faint);
+    border-radius: 2px;
+    overflow: hidden;
+    margin-top: 6px;
+  }
+  #chapter-progress .fill {
+    height: 100%;
+    width: 0;
+    background: var(--clay);
+    border-radius: 2px;
+    transition: width 0.3s ease;
+  }
+  .locked { display: none; }
+  .continue-hint {
+    font-family: var(--sans);
+    font-size: 13px;
+    color: var(--muted);
+    border: 1px dashed var(--faint);
+    border-radius: 8px;
+    padding: 10px 14px;
+    margin: 1.5em 0;
+  }
+  .quiz .quiz-opt.wrong-pick { border-style: dashed; opacity: 0.6; }
+  .quiz .quiz-opt.wrong-pick::before { content: "\2717\00a0\00a0"; color: var(--muted); }
+  @media (prefers-reduced-motion: reduce) {
+    #chapter-progress .fill { transition: none; }
+  }
+
+  /* Checkpoint rail (left of the essay on wide screens) */
+  .rail { display: none; }
+  @media (min-width: 920px) {
+    .rail { display: block; }
+    .rail-inner {
+      position: sticky;
+      top: 90px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+    .rail-count {
+      font-family: var(--sans);
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+    }
+    .rail-count.done { color: var(--clay); }
+    .rail-track {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+    }
+    .rail-track::before {
+      content: "";
+      position: absolute;
+      top: 14px;
+      bottom: 14px;
+      left: 50%;
+      width: 1px;
+      background: var(--faint);
+    }
+    .rail-dot {
+      position: relative;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--sans);
+      font-size: 11.5px;
+      background: var(--bg);
+      border: 1px solid var(--faint);
+      color: var(--muted);
+      padding: 0;
+      cursor: default;
+    }
+    .rail-dot.passed {
+      background: var(--clay);
+      border-color: var(--clay);
+      color: var(--bg);
+      cursor: pointer;
+    }
+    .rail-dot.current {
+      border-color: var(--clay);
+      color: var(--clay);
+      cursor: pointer;
+    }
+    .rail-dot.passed:hover,
+    .rail-dot.current:hover {
+      box-shadow: 0 0 0 3px color-mix(in srgb, var(--clay) 25%, transparent);
+    }
+    .rail-dot:focus-visible {
+      outline: 1px dashed var(--clay);
+      outline-offset: 2px;
+    }
+  }
+
+  /* Tooltip */
+  #char-tooltip {
+    position: fixed;
+    z-index: 50;
+    max-width: min(320px, calc(100vw - 24px));
+    background: #221c17;
+    border: 1px solid var(--faint);
+    border-radius: 8px;
+    padding: 12px 14px;
+    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.55);
+    font-family: var(--sans);
+    font-size: 13.5px;
+    line-height: 1.5;
+    color: var(--text);
+    pointer-events: none;
+  }
+  #char-tooltip .tip-name {
+    font-family: var(--serif);
+    font-size: 17px;
+    font-weight: 700;
+    margin-bottom: 2px;
+  }
+  #char-tooltip .tip-role {
+    color: var(--clay);
+    font-size: 12px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  #char-tooltip .tip-bio { color: var(--muted); }
+  #char-tooltip .tip-hint {
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid var(--faint);
+    font-size: 12px;
+    color: var(--clay);
+  }
+
+  /* Decoder table */
+  table.decoder {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: var(--sans);
+    font-size: 15px;
+    margin: 8px 0 16px;
+  }
+  table.decoder th {
+    text-align: left;
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--faint);
+  }
+  table.decoder td {
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--faint);
+  }
+  table.decoder td:first-child { color: var(--clay); }
+
+  /* Glossary */
+  .person {
+    padding: 16px 18px;
+    margin-bottom: 12px;
+    background: var(--surface);
+    border: 1px solid var(--faint);
+    border-radius: 8px;
+  }
+  .person h3 { font-size: 18px; margin-bottom: 2px; }
+  .person .role {
+    font-family: var(--sans);
+    font-size: 12px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--clay);
+    margin-bottom: 6px;
+  }
+  .person p:last-child {
+    font-size: 16px;
+    color: var(--muted);
+    margin: 0;
+  }
+  .person.mappable { cursor: pointer; }
+  .person.mappable:hover { border-color: var(--clay); }
+  .person.mappable:focus-visible {
+    outline: 1px dashed var(--clay);
+    outline-offset: 2px;
+  }
+
+  /* Map */
+  #map-section { margin-top: 48px; }
+  .map-note {
+    font-family: var(--sans);
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 12px;
+  }
+  #map-chip {
+    display: none;
+    align-items: center;
+    gap: 10px;
+    font-family: var(--sans);
+    font-size: 13px;
+    background: var(--surface);
+    border: 1px solid var(--clay);
+    border-radius: 999px;
+    padding: 6px 8px 6px 14px;
+    margin-bottom: 12px;
+  }
+  #map-chip.on { display: inline-flex; }
+  #map-chip button {
+    font-family: var(--sans);
+    font-size: 12px;
+    color: var(--bg);
+    background: var(--clay);
+    border: none;
+    border-radius: 999px;
+    padding: 3px 10px;
+    cursor: pointer;
+  }
+  #map-chip button:focus-visible {
+    outline: 1px dashed var(--text);
+    outline-offset: 2px;
+  }
+
+  #relmap {
+    width: 100%;
+    height: auto;
+    display: block;
+    background: var(--surface);
+    border: 1px solid var(--faint);
+    border-radius: 10px;
+  }
+  #relmap .node rect {
+    fill: #2a221b;
+    stroke: var(--faint);
+    stroke-width: 1;
+  }
+  #relmap .node.divine rect { fill: #2e241a; }
+  #relmap .node text {
+    fill: var(--text);
+    font-family: var(--sans);
+    font-size: 14px;
+    letter-spacing: 0.04em;
+  }
+  #relmap .node { cursor: pointer; }
+  #relmap .node:hover rect { stroke: var(--clay); }
+  #relmap .node:focus { outline: none; }
+  #relmap .node:focus-visible rect { stroke: var(--clay); stroke-dasharray: 3 3; }
+  #relmap .edge {
+    stroke: #5c4f41;
+    stroke-width: 1.5;
+    fill: none;
+  }
+  #relmap .edge-label {
+    fill: #91816c;
+    font-family: var(--sans);
+    font-size: 11px;
+    letter-spacing: 0.03em;
+  }
+  #relmap .edge-label.loud {
+    fill: var(--clay);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+  }
+  #relmap .band-label {
+    fill: #6b5c4a;
+    font-family: var(--sans);
+    font-size: 10px;
+    letter-spacing: 0.22em;
+  }
+
+  #relmap .node, #relmap .edge, #relmap .edge-label {
+    transition: opacity 0.2s ease;
+  }
+  #relmap.dimmed .node,
+  #relmap.dimmed .edge,
+  #relmap.dimmed .edge-label { opacity: 0.15; }
+  #relmap.dimmed .lit { opacity: 1; }
+  #relmap .node.sel rect {
+    stroke: var(--clay);
+    stroke-width: 2.5;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    #relmap .node, #relmap .edge, #relmap .edge-label { transition: none; }
+  }
+
+  @media (max-width: 480px) {
+    h1 { font-size: 32px; }
+    article { font-size: 17.5px; }
+    .page { padding-top: 44px; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+<aside class="rail" aria-label="Chapter checkpoints">
+  <div class="rail-inner">
+    <div class="rail-count" id="rail-count"></div>
+    <div class="rail-track" id="rail-track"></div>
+  </div>
+</aside>
+
+<div class="main-col">
+
+<header>
+  <nav class="book-nav"><a href="index.html">&uarr; Contents</a> &nbsp;&middot;&nbsp; <a href="book_22.html">&larr; Book 22</a> &nbsp;&middot;&nbsp; <a href="book_24.html">Book 24 &rarr;</a></nav>
+  <div class="kicker">The Iliad, retold</div>
+  <h1>Book 23</h1>
+  <p class="subtitle">Book Twenty-Three, after Samuel Butler&rsquo;s translation &mdash; a ghost asks for one urn, twelve prisoners feed a pyre, and the army remembers how to play.</p>
+  <div id="chapter-progress" aria-live="polite">
+    <span id="chapter-progress-label"></span>
+    <div class="bar"><div class="fill"></div></div>
+  </div>
+</header>
+
+<hr class="rule">
+
+<article>
+
+<p><span class="char" data-char="hector" tabindex="0" role="button">Hector</span> is dead, and the army clocks out. When they reach the ships every man goes back to his own tent &mdash; except the Myrmidons, whom <span class="char" data-char="achilles" tabindex="0" role="button">Achilles</span> will not release. Not yet, he says; first we mourn. Three times they drive their chariots weeping around the body of <span class="char" data-char="patroclus" tabindex="0" role="button">Patroclus</span>, and <span class="char" data-char="achilles" tabindex="0" role="button">Achilles</span> lays his bloodstained hand on his friend&rsquo;s chest and renews the ugliest vow in the poem: I will drag <span class="char" data-char="hector" tabindex="0" role="button">Hector</span> here and let dogs devour him raw, and twelve noble sons of Trojans will I slay before your pyre. Then a funeral feast, which he attends but will not wash for. He swears it as an oath: no water touches my body until <span class="char" data-char="patroclus" tabindex="0" role="button">Patroclus</span> is on the flames, the barrow built, my head shaved. Grief, for <span class="char" data-char="achilles" tabindex="0" role="button">Achilles</span>, is a project plan with a hygiene freeze.</p>
+
+<p>That night, worn out from chasing <span class="char" data-char="hector" tabindex="0" role="button">Hector</span> around windy Ilius, he finally sleeps &mdash; and <span class="char" data-char="patroclus" tabindex="0" role="button">Patroclus</span> comes to him. Not a symbol, not a voice: the man himself, &ldquo;like what he had been in stature, voice, and the light of his beaming eyes,&rdquo; wearing his own clothes. And the first thing the ghost does is complain. &ldquo;You sleep, <span class="char" data-char="achilles" tabindex="0" role="button">Achilles</span>, and have forgotten me; you loved me living, but now that I am dead you think for me no further.&rdquo; Bury me with all speed, he says, so I may pass the gates of Hades &mdash; the other ghosts drive me off; they will not let me across the river; I wander desolate outside the walls. It turns out the underworld has a lobby, and admission is bureaucratic: no rites, no entry. The dead themselves enforce it. Burial in this world isn&rsquo;t sentiment. It&rsquo;s paperwork the deceased is actively waiting on.</p>
+
+<p>Then the second request, and it&rsquo;s the reason this scene has outlived every empire since. Let not my bones be laid apart from yours, <span class="char" data-char="achilles" tabindex="0" role="button">Achilles</span>, but with them &mdash; &ldquo;even as we were brought up together in your own home.&rdquo; And he tells the story: how as a boy in Opoeis he killed another child in a stupid quarrel over dice &mdash; &ldquo;not of set purpose&rdquo; &mdash; and Menoetius brought him to Peleus&rsquo; house, and Peleus was kind to him and named him squire to his son. So: one urn for both sets of bones, the two-handled golden vase your mother gave you. The poem&rsquo;s whole definition of friendship, stated from the far side of death &mdash; two lives that were raised as one should be filed as one. <span class="char" data-char="achilles" tabindex="0" role="button">Achilles</span> answers that of course he&rsquo;ll do all of it, then asks for the one thing not on the list: come closer, let us hold each other one more time. He reaches out &mdash; &ldquo;and there was nothing, and the spirit vanished as a vapour, gibbering and whining into the earth.&rdquo; He springs up and smacks his hands together, and his cry is precise: there really are ghosts in the house of Hades, but there is no life in them. All night the thing hovered over me, <em>looking wondrously like himself</em>. The likeness was perfect. The person was gone. That gap is what mourning is.</p>
+
+<div class="quiz" data-answer="b">
+  <div class="quiz-kicker">Pause &mdash; check yourself</div>
+  <p class="quiz-q">The ghost asks for two things: burn me quickly, and let our bones lie in a single urn. What is the second request actually saying?</p>
+  <div class="quiz-opts">
+    <button type="button" class="quiz-opt" data-opt="a">A claim on the future &mdash; Achilles will die at Troy too, and sharing the urn guarantees his own bones a keeper when no one sails home</button>
+    <button type="button" class="quiz-opt" data-opt="b">A definition of friendship &mdash; raised in one house since boyhood, they were one life, and death should record them as one</button>
+    <button type="button" class="quiz-opt" data-opt="c">A duty of rank &mdash; a squire is buried beside his master so the service that defined him living can continue in the house of Hades</button>
+  </div>
+  <p class="quiz-why" hidden>The ghost does announce Achilles&rsquo; death &mdash; &ldquo;you too are doomed to die beneath the wall&rdquo; &mdash; which makes option a tempting. But notice he states it flatly, as fact, not leverage; the urn request never mentions it. The reason he actually gives runs entirely backward: the dice quarrel, Menoetius, Peleus&rsquo; kindness, &ldquo;we were brought up together in your own home.&rdquo; And it isn&rsquo;t duty either &mdash; nothing in the culture requires a squire&rsquo;s bones to share his master&rsquo;s urn; that&rsquo;s why the request needs making at all. What was one life should be one grave. The Iliad defines love by its storage requirements.</p>
+</div>
+
+<p>Morning brings logistics. <span class="char" data-char="agamemnon" tabindex="0" role="button">Agamemnon</span> sends men and mules from every part of the camp under Meriones, squire of <span class="char" data-char="idomeneus" tabindex="0" role="button">Idomeneus</span>; they fell tall oaks on Ida and haul the timber to the shore, to the spot where <span class="char" data-char="achilles" tabindex="0" role="button">Achilles</span> has planned &ldquo;a mighty monument for <span class="char" data-char="patroclus" tabindex="0" role="button">Patroclus</span> and for himself.&rdquo; Read that clause twice. Then the procession: chariots first, a cloud of infantry behind, the body carried in the middle covered with locks of hair the men cut off and threw on it. At the pyre <span class="char" data-char="achilles" tabindex="0" role="button">Achilles</span> cuts one more lock &mdash; the one his father vowed to the river Spercheius against his homecoming, with fifty she-goats promised at the springs. Standing there he cancels the contract out loud: you have not granted the prayer, and I shall see my home no more &mdash; so I give this lock to <span class="char" data-char="patroclus" tabindex="0" role="button">Patroclus</span> instead. He liquidates his own homecoming in a sentence and transfers the collateral to a dead man&rsquo;s hands.</p>
+
+<p>He also manages the crowd like a professional. There is a time to mourn, he tells <span class="char" data-char="agamemnon" tabindex="0" role="button">Agamemnon</span>, and a time to cease from mourning &mdash; dismiss the people to their dinners; the chief mourners will finish the work. Then the pyre goes up, a hundred feet on a side, and what goes onto it is an inventory of escalating darkness. Sheep and oxen, their fat wrapped around the body. Jars of honey and unguents. Four horses, thrown on as their owner groans. Two of the dead man&rsquo;s own house-dogs. And then: &ldquo;he also put twelve brave sons of noble Trojans to the sword and laid them with the rest, for he was full of bitterness and fury.&rdquo; That&rsquo;s the whole account. Butler gives the massacre a clause; the Greek gives it one flat editorial phrase &mdash; <em>evil were the deeds he devised</em> &mdash; and moves on to the fire. No names, no speeches, no scene. Twelve bound prisoners butchered between the dogs and the kindling, marked as evil in passing by the same poem that&rsquo;s conducting the funeral. Meanwhile the other half of the vow is quietly failing: the dogs never touch <span class="char" data-char="hector" tabindex="0" role="button">Hector</span>. Aphrodite keeps them off day and night and anoints him with rose oil; Apollo shades the ground with a cloud so the sun can&rsquo;t parch him. The gods have started tending the body <span class="char" data-char="achilles" tabindex="0" role="button">Achilles</span> is still cursing.</p>
+
+<div class="quiz" data-answer="c">
+  <div class="quiz-kicker">Pause &mdash; check yourself</div>
+  <p class="quiz-q">Twelve Trojan prisoners go onto the pyre with the horses and the dogs. How does the poem handle it?</p>
+  <div class="quiz-opts">
+    <button type="button" class="quiz-opt" data-opt="a">As ritual arithmetic &mdash; a friend of this rank commands a tariff in blood, and Achilles is paying what his culture&rsquo;s funeral rites set for the loss</button>
+    <button type="button" class="quiz-opt" data-opt="b">As a debt entered on the books &mdash; the gods now shielding Hector&rsquo;s corpse are keeping score, and Achilles will answer for this before the end</button>
+    <button type="button" class="quiz-opt" data-opt="c">As an atrocity inside the mourning &mdash; one clause of judgment, no scene and no speech, and the fire takes them with the sheep</button>
+  </div>
+  <p class="quiz-why" hidden>Option a is Achilles&rsquo; own framing &mdash; he announced it as a vow &mdash; but nothing in the rite requires it: horses, dogs, honey, and fat are the furniture of a grand funeral, and no other funeral in Homer burns men. Option b imports a justice the text never promises: no god objects, no punishment follows, and the divine care for Hector&rsquo;s body predates the massacre. What the poem actually does is spend one clause &mdash; the Greek flatly calls it evil work &mdash; and turn to the problem of getting the wood lit. That&rsquo;s the horror: the atrocity is neither hidden nor dramatized. It&rsquo;s itemized, in line, between the dogs and the honey.</p>
+</div>
+
+<p>Then the pyre won&rsquo;t light. There is something almost comic in it: the greatest warrior alive, standing before his masterpiece of grief, and the wood just sits there. So <span class="char" data-char="achilles" tabindex="0" role="button">Achilles</span> does what you do in this world &mdash; he files a request with the relevant department. He prays to the north and west winds, Boreas and Zephyrus, and vows them offerings; Iris carries the message and finds the winds at a feast in Zephyrus&rsquo; house. They all jump up and offer her a seat; she can&rsquo;t stay &mdash; the Ethiopians are sacrificing hecatombs and she wants her share &mdash; but delivers the request. The winds rise with a cry, whip the sea into waves, and fall on the pyre all night while <span class="char" data-char="achilles" tabindex="0" role="button">Achilles</span> paces the fire drawing wine from a golden bowl and pouring it into the ground, calling the name of the dead. Homer reaches for his measure of the grief: as a father mourns while burning the bones of a son who died on his wedding day. The oldest audience in the world knew exactly what that weighed.</p>
+
+<p>At dawn the flames fall and the winds go home. They quench the embers with wine and gather the bones with tears &mdash; easy to find, <span class="char" data-char="achilles" tabindex="0" role="button">Achilles</span> notes with a mourner&rsquo;s terrible practicality, &ldquo;for they lie in the middle of the pyre,&rdquo; everything else burned at the edges. Into a golden urn they go, in two layers of fat, &ldquo;against the time when I shall myself go down into the house of Hades.&rdquo; The urn stays open. He specs the barrow too: modest for now; afterwards, let those Achaeans who are left at the ships when I am gone build it broad and high. He has priced his own death down to the earthworks and the phasing of construction. And then, with the past buried and his own grave half-planned, he does the strangest and sanest thing in the poem. He stops the people from leaving, sits them down in a wide circle, and sends to the ships for prizes.</p>
+
+<p>What follows is a full day of games, and it&rsquo;s worth saying plainly what you&rsquo;re watching: civilization rebooting from a cold start. These are the same men who have spent twenty-two books killing people &mdash; and here they are competing under published rules, for listed prizes, with an umpire (<span class="char" data-char="achilles" tabindex="0" role="button">Achilles</span> stations old Phoenix at the turning post &ldquo;to note the running, and report truly&rdquo;). Every dispute that flares &mdash; and they flare constantly, these are still Homeric heroes &mdash; gets settled in minutes, with words, judges, oaths, and consolation prizes. The quarrel that opened the poem was exactly this shape: men, prizes, honor. It ran unmanaged and nearly destroyed the army. Book Twenty-Three is the same experiment run with the safety systems on, and the man operating them is the last person you&rsquo;d have predicted.</p>
+
+<p>First event, biggest prizes: the chariot race. A woman skilled in useful arts and a twenty-two-measure cauldron for first; a pregnant mare for second; on down to two talents of gold and a two-handled urn. <span class="char" data-char="achilles" tabindex="0" role="button">Achilles</span> opens by recusing himself, with the unembarrassed frankness of the genuinely best: you know my immortal horses would win &mdash; but they are in mourning for the driver who used to wash them and oil their manes; &ldquo;see how they stand weeping here, with their manes trailing on the ground.&rdquo; Five men enter: <span class="char" data-char="eumelus" tabindex="0" role="button">Eumelus</span>, the best horseman alive; <span class="char" data-char="diomedes" tabindex="0" role="button">Diomedes</span> with the Trojan stallions he took from Aeneas; <span class="char" data-char="menelaus" tabindex="0" role="button">Menelaus</span> with <span class="char" data-char="agamemnon" tabindex="0" role="button">Agamemnon</span>&rsquo;s mare Aethe under the yoke; young <span class="char" data-char="antilochus" tabindex="0" role="button">Antilochus</span>; and Meriones. And before the start, <span class="char" data-char="nestor" tabindex="0" role="button">Nestor</span> takes his son aside for the poem&rsquo;s great lecture on cunning. Your horses are the slowest in the field, he tells <span class="char" data-char="antilochus" tabindex="0" role="button">Antilochus</span>, so the race must be won somewhere else: &ldquo;the woodman does more by skill than by brute force; by skill the pilot guides his storm-tossed barque over the sea, and so by skill one driver can beat another.&rdquo; Everything compresses to the doubling-post &mdash; the dead tree stump with the two white stones. Hug it so close the nave of your wheel almost grazes it; lean your body left; give the right-hand horse the lash and a loose rein. A man who knows the precise moment to pull the rein beats a man with faster horses every time. It is the old man&rsquo;s whole theory of life &mdash; intelligence as the poor man&rsquo;s horsepower &mdash; handed over at the rail of a racecourse. His son listens carefully. Perhaps a little too carefully.</p>
+
+<div class="quiz" data-answer="a">
+  <div class="quiz-kicker">Pause &mdash; check yourself</div>
+  <p class="quiz-q">Nestor&rsquo;s horses are the slowest entered, and he lectures Antilochus anyway. What is the lecture actually about?</p>
+  <div class="quiz-opts">
+    <button type="button" class="quiz-opt" data-opt="a">Leverage &mdash; at a fixed post the whole race compresses to one decision, and the man who knows the precise moment beats the man with better horses</button>
+    <button type="button" class="quiz-opt" data-opt="b">Preparation &mdash; he has reconnoitered the doubling-post in detail, and the course intelligence he hands his son is an edge no other driver holds</button>
+    <button type="button" class="quiz-opt" data-opt="c">Inheritance &mdash; barred from racing by age, he loads a lifetime of craft into his son and competes the only way still open to an old man</button>
+  </div>
+  <p class="quiz-why" hidden>Option b fails on a detail Homer plants deliberately: the post is public knowledge &mdash; Achilles showed it to every driver before the start. What Nestor adds isn&rsquo;t the location but the technique: lean left, loose rein, wheel-nave grazing the stone, and above all the &ldquo;precise moment.&rdquo; Option c is emotionally true, but the poem gives that theme its own scene later, with the urn. The lecture itself is Homer&rsquo;s ode to metis &mdash; skill as the thing that beats endowment at the point where everything converges. Note what Antilochus does with it: the lesson was about the turning post, and he runs it on Menelaus.</p>
+</div>
+
+<p>The race is glorious chaos, and the gods can&rsquo;t stay out of it even at sporting scale. Apollo, still sulking, knocks the whip from <span class="char" data-char="diomedes" tabindex="0" role="button">Diomedes</span>&rsquo; hands; <span class="char" data-char="athena" tabindex="0" role="button">Athena</span> hands it back and, in a rage, breaks <span class="char" data-char="eumelus" tabindex="0" role="button">Eumelus</span>&rsquo; yoke for him &mdash; the best horseman in the field goes down at full speed, &ldquo;his elbows, mouth, and nostrils all torn,&rdquo; his eyes filling with tears while <span class="char" data-char="diomedes" tabindex="0" role="button">Diomedes</span> sweeps past to a lead no one will touch. Behind them, <span class="char" data-char="antilochus" tabindex="0" role="button">Antilochus</span> finds his moment: a narrow place where winter rain has sunk the road. <span class="char" data-char="menelaus" tabindex="0" role="button">Menelaus</span> is holding the line into it; <span class="char" data-char="antilochus" tabindex="0" role="button">Antilochus</span> pulls alongside anyway. <span class="char" data-char="menelaus" tabindex="0" role="button">Menelaus</span> shouts that the road is too narrow, that he&rsquo;ll wreck them both &mdash; and <span class="char" data-char="antilochus" tabindex="0" role="button">Antilochus</span> &ldquo;plied his whip, and drove faster, as though he had not heard him.&rdquo; The senior man blinks first, easing off rather than pile both chariots into the ditch: the junior driver created the risk, and the elder absorbed it. Even the spectators start fighting. <span class="char" data-char="idomeneus" tabindex="0" role="button">Idomeneus</span>, watching from high ground, calls the new leader correctly; the lesser of the two men who share a famous name &mdash; Oileus&rsquo; quick little son, we&rsquo;ll meet him again shortly &mdash; abuses him for it; wagers are proposed, tempers rise. And <span class="char" data-char="achilles" tabindex="0" role="button">Achilles</span> puts it out in two sentences: cease your railing, both of you; sit down and watch; you&rsquo;ll know the winner directly. The man who once let a dispute over prizes run to catastrophe now closes one before it finishes its second insult.</p>
+
+<p><span class="char" data-char="diomedes" tabindex="0" role="button">Diomedes</span> comes in first and takes the woman and the cauldron. <span class="char" data-char="antilochus" tabindex="0" role="button">Antilochus</span> is second &mdash; &ldquo;by a trick and not by the fleetness of his horses,&rdquo; Butler notes, auditing to the last &mdash; with <span class="char" data-char="menelaus" tabindex="0" role="button">Menelaus</span> a wheel&rsquo;s-breadth behind and closing. Meriones is fourth, and last of all comes <span class="char" data-char="eumelus" tabindex="0" role="button">Eumelus</span>, dragging his wrecked chariot and driving his horses before him on foot. Now watch <span class="char" data-char="achilles" tabindex="0" role="button">Achilles</span>, because the poem certainly is. He&rsquo;s moved by the sight &mdash; &ldquo;the best man is coming in last&rdquo; &mdash; and proposes giving <span class="char" data-char="eumelus" tabindex="0" role="button">Eumelus</span> the second prize. The crowd applauds. And <span class="char" data-char="antilochus" tabindex="0" role="button">Antilochus</span> stands up and refuses: that mare is mine; <span class="char" data-char="eumelus" tabindex="0" role="button">Eumelus</span> should have prayed to the immortals; if you pity him, &ldquo;you have much gold in your tents&rdquo; &mdash; give him a better prize from your own store, &ldquo;but I will not give up the mare, and he that will fight me for her, let him come on.&rdquo; A commander proposing to reassign a subordinate&rsquo;s prize, and the subordinate refusing: this is Book One&rsquo;s geometry, atom for atom. And <span class="char" data-char="achilles" tabindex="0" role="button">Achilles</span> smiles. He is pleased with his friend&rsquo;s nerve, sends Automedon to his tent for the bronze breastplate he stripped from Asteropaeus, and gives it to <span class="char" data-char="eumelus" tabindex="0" role="button">Eumelus</span>, who receives it gladly. Look at the move itself: he doesn&rsquo;t overrule the winner and he doesn&rsquo;t raid the prize pool. He expands it, at his own cost. The entire first book of the Iliad happened because nobody in it would do this.</p>
+
+<div class="quiz" data-answer="c">
+  <div class="quiz-kicker">Pause &mdash; check yourself</div>
+  <p class="quiz-q">Achilles proposes second prize for Eumelus, who crashed and came in last; Antilochus, who earned it, refuses to hand it over. In Book One this exact shape burned the army down. What keeps it from burning now?</p>
+  <div class="quiz-opts">
+    <button type="button" class="quiz-opt" data-opt="a">The stakes &mdash; a mare is a game token rather than a war-prize like Briseis, so honor is engaged here without grief underneath it</button>
+    <button type="button" class="quiz-opt" data-opt="b">The claimant &mdash; Antilochus is one of Achilles&rsquo; dearest comrades, and affection absorbs an insult that a rival&rsquo;s demand would have detonated</button>
+    <button type="button" class="quiz-opt" data-opt="c">The judge &mdash; Achilles expands the pool instead of raiding it, paying for the extra prize from his own tent so no one&rsquo;s winnings are touched</button>
+  </div>
+  <p class="quiz-why" hidden>Option a fails on the text: Antilochus offers to fight any man who touches the mare &mdash; game prizes carry full honor-weight here, which is exactly why the scene is a real test. Option b is half-true &mdash; Achilles does smile because he loves him &mdash; but affection existed in Book One too, and it stopped nothing. The difference is mechanical, and Antilochus names it: &ldquo;you have much gold in your tents... give him a better prize.&rdquo; Someone absorbs the cost instead of transferring it, and honor stops being zero-sum. That solution was available to Agamemnon in Book One, stated almost word for word. Nobody would take it.</p>
+</div>
+
+<p>One protest left, and it&rsquo;s the book&rsquo;s masterpiece. <span class="char" data-char="menelaus" tabindex="0" role="button">Menelaus</span> rises in a rage over the foul at the narrow place &mdash; and even his rage is procedural: an attendant puts the speaker&rsquo;s staff in his hands and calls for silence first. His complaint is a small marvel of self-awareness. Judge between us, princes &mdash; and show no favor, lest men say <span class="char" data-char="menelaus" tabindex="0" role="button">Menelaus</span> won by weight and influence over a better driver. No &mdash; I&rsquo;ll rule on it myself, and no man will blame me: <span class="char" data-char="antilochus" tabindex="0" role="button">Antilochus</span>, come stand before your chariot as custom is, and swear by the earth-encircling god that you did not foul me on purpose. It&rsquo;s a perfectly built trap &mdash; perjure yourself before heaven, or admit the trick. And <span class="char" data-char="antilochus" tabindex="0" role="button">Antilochus</span> does neither. He folds, and folds beautifully: &ldquo;Forgive me; I am much younger, King <span class="char" data-char="menelaus" tabindex="0" role="button">Menelaus</span>, than you are; you stand higher than I do and are the better man of the two.&rdquo; Young men&rsquo;s tempers are hasty, he says, their judgment thin &mdash; the mare is yours, and anything more you ask of mine, rather than fall from your good graces and be wrong in the sight of heaven. And <span class="char" data-char="menelaus" tabindex="0" role="button">Menelaus</span> melts. Homer gives him the book&rsquo;s loveliest simile &mdash; his heart made glad &ldquo;as when dew falls upon a field of ripening corn&rdquo; &mdash; and then, warmed all through, he gives the mare back. You&rsquo;ve never been headstrong before, he says; your youth got the better of your judgment; don&rsquo;t outwit your betters next time &mdash; and the people will see &ldquo;that I am neither harsh nor vindictive.&rdquo; Run the comparison the poem is begging you to run. In Book One, two men each refused to yield first, and both lost everything. Here the junior yields completely &mdash; and gets the prize back, plus <span class="char" data-char="menelaus" tabindex="0" role="button">Menelaus</span>&rsquo; regard. Yielding turns out to be the only move in the whole poem that returns more honor than it spends.</p>
+
+<p>The fifth prize from the race, the two-handled urn, is left unawarded &mdash; so <span class="char" data-char="achilles" tabindex="0" role="button">Achilles</span> carries it across the assembly to <span class="char" data-char="nestor" tabindex="0" role="button">Nestor</span>. Take this, my good old friend, as an heirloom and memorial of the funeral &mdash; &ldquo;for you shall see him no more among the Argives.&rdquo; And then, with a tactlessness so total it comes out the other side as tenderness: I give you this prize though you cannot win one; &ldquo;you can now neither wrestle nor fight,&rdquo; nor box, nor run, &ldquo;for the hand of age has been laid heavily upon you.&rdquo; Read cold, it&rsquo;s brutal. Delivered and received, it&rsquo;s an honor &mdash; because <span class="char" data-char="nestor" tabindex="0" role="button">Nestor</span> understands exactly what&rsquo;s being given. He accepts gladly and pays for it in his own currency, the reminiscence: the funeral games of King Amarynceus, where he won the boxing and the wrestling and the running and the spear, and lost only the chariot race, to twins who ganged the reins between them. My heart rejoices, he finishes, that you are ever mindful of the respect due to me. An unearned prize, gracefully given, gratefully taken &mdash; and it works because prizes in this world were never really about performance. They&rsquo;re about being seen. <span class="char" data-char="achilles" tabindex="0" role="button">Achilles</span>, of all people, has learned to hand out the seeing.</p>
+
+<p>The rest of the card runs fast, and every event lands the same joke from a different angle: the war&rsquo;s deadly machinery, scaled down until it&rsquo;s safe enough to laugh at. Boxing: Epeus stands up and delivers the eternal athlete&rsquo;s press conference &mdash; I am the best here, no man can be good at everything, and whoever faces me should have his friends standing by to carry him out. He then proves every word on Euryalus&rsquo; jaw &mdash; and catches him as he falls, and sets him kindly on his feet. Wrestling: <span class="char" data-char="ajax" tabindex="0" role="button">Ajax</span> and <span class="char" data-char="odysseus" tabindex="0" role="button">Odysseus</span>, strength against craft, gripping like the rafters of a roof, backbones cracking. Neither can throw the other &mdash; <span class="char" data-char="odysseus" tabindex="0" role="button">Odysseus</span> tries the knee-trick, they go down twice in the dust &mdash; and before a third fall can settle anything, <span class="char" data-char="achilles" tabindex="0" role="button">Achilles</span> stops it: &ldquo;the victory is with both alike&rdquo; &mdash; equal prizes, next event. A draw, called by the judge before pride can force an ending someone would have to lose.</p>
+
+<p>Then the foot race, the book&rsquo;s best comedy. Oileus&rsquo; son takes the lead at once; <span class="char" data-char="odysseus" tabindex="0" role="button">Odysseus</span> runs so close behind that his breath is on the leader&rsquo;s neck, treading in his footprints before the dust can settle. Nearing the finish, <span class="char" data-char="odysseus" tabindex="0" role="button">Odysseus</span> prays inwardly to <span class="char" data-char="athena" tabindex="0" role="button">Athena</span> &mdash; and she does two things: makes his limbs light, and trips the leader into the slick of dung left from the funeral cattle. The man crosses the line second with his mouth and nostrils full of it, takes the ox for his prize, and stands there spitting and complaining: the goddess &ldquo;stands by <span class="char" data-char="odysseus" tabindex="0" role="button">Ulysses</span> as though she were his own mother.&rdquo; The whole army laughs &mdash; at divine intervention, the very thing that has been killing them for weeks, now shrunk to the size of a prank at a track meet. <span class="char" data-char="antilochus" tabindex="0" role="button">Antilochus</span>, collecting third prize, caps it with the book&rsquo;s driest joke: you all see, friends, that the gods honor the older generation &mdash; the man ahead of me is a bit older than I am, and <span class="char" data-char="odysseus" tabindex="0" role="button">Odysseus</span> is of an earlier generation entirely, yet no Achaean can outrun him &ldquo;save only <span class="char" data-char="achilles" tabindex="0" role="button">Achilles</span>.&rdquo; Flattery, filed openly as flattery &mdash; and paid on the spot: <span class="char" data-char="achilles" tabindex="0" role="button">Achilles</span>, delighted, adds half a talent of gold to his prize. Praise in this economy is real work, and the host settles his invoices immediately.</p>
+
+<p>One event goes wrong, instructively. <span class="char" data-char="achilles" tabindex="0" role="button">Achilles</span> offers Sarpedon&rsquo;s armor for a duel in full gear &mdash; first man to draw blood wins a Thracian sword. <span class="char" data-char="ajax" tabindex="0" role="button">Ajax</span> and <span class="char" data-char="diomedes" tabindex="0" role="button">Diomedes</span> arm and go at each other three times, and when <span class="char" data-char="diomedes" tabindex="0" role="button">Diomedes</span> starts working the point of his spear at <span class="char" data-char="ajax" tabindex="0" role="button">Ajax</span>&rsquo;s neck, the crowd itself calls it off, &ldquo;alarmed for his safety.&rdquo; The audience has remembered what the game is a model of, and refuses to watch the model run to completion. The shot-put goes to Polypoetes, who throws the iron lump the way a herdsman flings his stick, clean over the whole field&rsquo;s marks. The archery turns on accounting: Teucer, first up, forgets to promise Apollo a hecatomb and misses the pigeon &mdash; though he cuts the tether &mdash; while Meriones snatches the bow, promises the lambs mid-draw, and takes the bird out of the sky. Even at a carnival shooting gallery, the gods bill for services, and the man with the open purchase order wins.</p>
+
+<p>And then the last event, which never happens. <span class="char" data-char="achilles" tabindex="0" role="button">Achilles</span> sets out a spear and a flowered cauldron for the javelin, and <span class="char" data-char="agamemnon" tabindex="0" role="button">Agamemnon</span> himself stands up to throw, against Meriones. <span class="char" data-char="achilles" tabindex="0" role="button">Achilles</span> stops the contest before it starts: son of Atreus, &ldquo;we know how far you excel all others&rdquo; in the throw &mdash; take the first prize back to your ships, and let&rsquo;s give the spear to Meriones, if it please you. <span class="char" data-char="agamemnon" tabindex="0" role="button">Agamemnon</span> assents, takes the cauldron, hands it to his herald. That&rsquo;s the poem&rsquo;s last prize: awarded unthrown. The Iliad opened with these two men tearing the army apart over who got which prize; it closes the games with one of them handing the other honor he didn&rsquo;t compete for, free, in front of everyone &mdash; and the gift costs the giver nothing, because grief has moved <span class="char" data-char="achilles" tabindex="0" role="button">Achilles</span> out of the scarcity market entirely. He has spent the day minting honor and distributing it: to the loser who was best, to the old man who couldn&rsquo;t enter, to the flatterer, to the king. The army is whole again, laughing, fed, at play. Only one piece of grief in the camp remains unprocessed &mdash; it lies face-down in the dust by the ships, kept whole by the gods, waiting. The games taught these men how to be human with each other again. Book Twenty-Four will ask <span class="char" data-char="achilles" tabindex="0" role="button">Achilles</span> to extend that to the enemy.</p>
+
+<div class="quiz" data-answer="b">
+  <div class="quiz-kicker">Last one</div>
+  <p class="quiz-q">The final event never happens: Agamemnon stands up for the spear-throw and Achilles hands him first prize without a single throw. What is that gesture?</p>
+  <div class="quiz-opts">
+    <button type="button" class="quiz-opt" data-opt="a">Hierarchy restored &mdash; with the war about to resume, Achilles publicly re-subordinates himself to the commander the army will need again</button>
+    <button type="button" class="quiz-opt" data-opt="b">The quarrel closed in its own currency &mdash; honor given freely to the man who once seized it by force, from a giver it now costs nothing</button>
+    <button type="button" class="quiz-opt" data-opt="c">A velvet insult &mdash; excusing the king from competing files his throwing arm with Nestor&rsquo;s wrestling, and every spectator can do the math</button>
+  </div>
+  <p class="quiz-why" hidden>Option c is the fun reading, but the scene carries none of Homer&rsquo;s mockery markers &mdash; no laughter, no aside, and Agamemnon assents without a flicker; compare Nestor&rsquo;s urn, where the &ldquo;you cannot win&rdquo; is said out loud and received as honor anyway. Option a gets the direction of power wrong: Achilles isn&rsquo;t beneath anyone at these games &mdash; he is host, judge, and bank, and giving from above is the opposite of submission. The point is the currency. The poem began with these two fighting over a prize because honor was scarce; Achilles now manufactures it and gives it away &mdash; to Eumelus, to Nestor, to Antilochus, and finally, pointedly, to Agamemnon. What&rsquo;s still unpaid lies in the dust outside the camp, and that bill comes due in Book Twenty-Four.</p>
+</div>
+
+</article>
+
+</div><!-- /main-col -->
+
+<aside class="side-col">
+<div class="side-inner">
+
+<section id="glossary-section">
+  <h2>Who&rsquo;s who</h2>
+
+  <div class="person" data-char="achilles">
+    <h3>Achilles</h3>
+    <p class="role">Host, judge, chief mourner</p>
+    <p>He buries his friend, slaughters twelve prisoners in his fury, then runs the games with perfect grace &mdash; smoothing quarrels, inventing consolation prizes. The man who wrecked the army over a prize now gives them away.</p>
+  </div>
+
+  <div class="person" data-char="patroclus">
+    <h3>Patroclus</h3>
+    <p class="role">The ghost</p>
+    <p>He comes back in a dream with two requests: burn me quickly, so the dead will let me across the river, and let our bones lie in a single urn. Achilles reaches for him and he vanishes like a vapour into the earth.</p>
+  </div>
+
+  <div class="person" data-char="antilochus">
+    <h3>Antilochus</h3>
+    <p class="role">Nestor&rsquo;s son</p>
+    <p>He takes his father&rsquo;s lecture on cunning a little too broadly, forces Menelaus off the racing line, then yields the mare so gracefully &mdash; you are my elder and my better &mdash; that he gets it back.</p>
+  </div>
+
+  <div class="person" data-char="menelaus">
+    <h3>Menelaus</h3>
+    <p class="role">King of Sparta</p>
+    <p>Fouled at the narrow place, he files a formal protest, staff in hand &mdash; and the moment Antilochus yields, his anger melts like dew on ripening corn and he hands the mare straight back.</p>
+  </div>
+
+  <div class="person" data-char="nestor">
+    <h3>Nestor</h3>
+    <p class="role">Old king of Pylos</p>
+    <p>His racing lecture is an ode to cunning: the woodman does more by skill than by brute force. Achilles brings him a prize he never competed for &mdash; you will box and wrestle no more &mdash; and he is delighted.</p>
+  </div>
+
+  <div class="person" data-char="eumelus">
+    <h3>Eumelus</h3>
+    <p class="role">Best of the charioteers</p>
+    <p>Leading the race when Athena breaks his yoke: elbows, mouth, and nostrils torn, he drags his wrecked chariot in last &mdash; and Achilles, sorry for the best man, finds him a consolation prize.</p>
+  </div>
+
+  <div class="person" data-char="diomedes">
+    <h3>Diomedes</h3>
+    <p class="role">Son of Tydeus</p>
+    <p>Winner of the chariot race after Apollo slaps the whip from his hand and Athena hands it back. In the armed duel he keeps aiming at Ajax&rsquo;s neck until the crowd stops the fight.</p>
+  </div>
+
+  <div class="person" data-char="odysseus">
+    <h3>Odysseus</h3>
+    <p class="role">The cunning one</p>
+    <p>He wrestles giant Ajax to a draw with a knee-trick, then wins the foot race by praying to Athena in the final stretch. Skill and patronage, indistinguishable as usual.</p>
+  </div>
+
+  <div class="person" data-char="ajax">
+    <h3>Ajax</h3>
+    <p class="role">Son of Telamon</p>
+    <p>The army&rsquo;s biggest man cracks backbones with Odysseus until Achilles calls the wrestling a draw, and fights Diomedes in full armor until the spectators refuse to watch the ending.</p>
+  </div>
+
+  <div class="person" data-char="agamemnon">
+    <h3>Agamemnon</h3>
+    <p class="role">Commander-in-chief</p>
+    <p>He stands up for the spear-throw and Achilles hands him first prize without a single throw &mdash; free honor from the man whose prize he confiscated in Book One.</p>
+  </div>
+
+  <div class="person" data-char="idomeneus">
+    <h3>Idomeneus</h3>
+    <p class="role">Captain of the Cretans</p>
+    <p>From the best seat on the high ground he calls the race correctly, gets abused for it by the lesser Ajax, and offers to settle it with a wager &mdash; a quarrel Achilles shuts down in two sentences.</p>
+  </div>
+
+  <div class="person" data-char="athena">
+    <h3>Athena</h3>
+    <p class="role">Goddess of wisdom and war</p>
+    <p>Still fixing outcomes, now at sporting scale: she returns Diomedes&rsquo; whip, breaks Eumelus&rsquo; yoke, and trips the lesser Ajax into cow dung so Odysseus can win the foot race.</p>
+  </div>
+
+  <div class="person" data-char="hector">
+    <h3>Hector</h3>
+    <p class="role">Unburied</p>
+    <p>His body still lies in the dust by the ships, promised to the dogs &mdash; but Aphrodite keeps them off with rose oil and Apollo shades him with a cloud. The gods are tending what Achilles is still cursing.</p>
+  </div>
+</section>
+
+<section id="map-section">
+  <h2>The relationship map</h2>
+  <p class="map-note">Click a name in the essay, the glossary, or a box below to trace a character&rsquo;s connections. Esc or the empty background clears it.</p>
+  <div id="map-chip" aria-live="polite">
+    <span id="map-chip-label"></span>
+    <button type="button" id="map-chip-clear">clear</button>
+  </div>
+  <div class="person" id="char-detail" hidden aria-live="polite"></div>
+
+  <svg id="relmap" viewBox="0 0 880 600" role="img" aria-label="Relationship map of Iliad Book Twenty-Three: the ghost of Patroclus visits Achilles; at the funeral games Nestor coaches Antilochus, who fouls Menelaus and then yields; Achilles hands prizes to Eumelus, Nestor, and Agamemnon">
+    <defs>
+      <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+        <path d="M 0 0 L 10 5 L 0 10 z" fill="#5c4f41"></path>
+      </marker>
+    </defs>
+
+    <text class="band-label" x="40" y="40">THE PYRE</text>
+    <text class="band-label" x="740" y="588">THE GAMES</text>
+
+    <!-- edges -->
+    <path class="edge" data-chars="patroclus,achilles" d="M 158 82 L 310 82"></path>
+    <text class="edge-label loud" data-chars="patroclus,achilles" x="234" y="70" text-anchor="middle">THE GHOST</text>
+
+    <path class="edge" data-chars="achilles,agamemnon" d="M 428 82 L 620 82"></path>
+    <text class="edge-label" data-chars="achilles,agamemnon" x="524" y="70" text-anchor="middle">the unthrown spear</text>
+
+    <path class="edge" data-chars="achilles,nestor" d="M 330 104 L 120 230" marker-end="url(#arrow)"></path>
+    <text class="edge-label" data-chars="achilles,nestor" x="230" y="168" text-anchor="start">an heirloom urn</text>
+
+    <path class="edge" data-chars="achilles,antilochus" d="M 365 104 L 359 230"></path>
+    <text class="edge-label" data-chars="achilles,antilochus" x="378" y="175" text-anchor="start">smiles at his nerve</text>
+
+    <path class="edge" data-chars="achilles,eumelus" d="M 322 104 L 99 430" marker-end="url(#arrow)"></path>
+    <text class="edge-label" data-chars="achilles,eumelus" x="185" y="318" text-anchor="start">a consolation prize</text>
+
+    <path class="edge" data-chars="nestor,antilochus" d="M 158 252 L 300 252"></path>
+    <text class="edge-label" data-chars="nestor,antilochus" x="240" y="240" text-anchor="start">the racing lecture</text>
+
+    <path class="edge" data-chars="antilochus,menelaus" d="M 418 252 L 590 252"></path>
+    <text class="edge-label loud" data-chars="antilochus,menelaus" x="504" y="240" text-anchor="middle">THE PROTEST</text>
+
+    <path class="edge" data-chars="eumelus,diomedes" d="M 158 452 L 250 452"></path>
+    <text class="edge-label loud" data-chars="eumelus,diomedes" x="204" y="440" text-anchor="middle">THE RACE</text>
+
+    <path class="edge" data-chars="diomedes,ajax" d="M 368 452 L 490 452"></path>
+    <text class="edge-label" data-chars="diomedes,ajax" x="429" y="440" text-anchor="middle">duel, stopped early</text>
+
+    <path class="edge" data-chars="ajax,odysseus" d="M 608 452 L 720 452"></path>
+    <text class="edge-label" data-chars="ajax,odysseus" x="664" y="440" text-anchor="middle">a called draw</text>
+
+    <!-- nodes -->
+    <g class="node" id="node-patroclus" data-node="patroclus" tabindex="0" role="button" aria-label="Patroclus — highlight connections">
+      <rect x="40" y="60" width="118" height="44" rx="8"></rect>
+      <text x="99" y="87" text-anchor="middle">Patroclus</text>
+    </g>
+    <g class="node" id="node-achilles" data-node="achilles" tabindex="0" role="button" aria-label="Achilles — highlight connections">
+      <rect x="310" y="60" width="118" height="44" rx="8"></rect>
+      <text x="369" y="87" text-anchor="middle">Achilles</text>
+    </g>
+    <g class="node" id="node-agamemnon" data-node="agamemnon" tabindex="0" role="button" aria-label="Agamemnon — highlight connections">
+      <rect x="620" y="60" width="118" height="44" rx="8"></rect>
+      <text x="679" y="87" text-anchor="middle">Agamemnon</text>
+    </g>
+    <g class="node" id="node-nestor" data-node="nestor" tabindex="0" role="button" aria-label="Nestor — highlight connections">
+      <rect x="40" y="230" width="118" height="44" rx="8"></rect>
+      <text x="99" y="257" text-anchor="middle">Nestor</text>
+    </g>
+    <g class="node" id="node-antilochus" data-node="antilochus" tabindex="0" role="button" aria-label="Antilochus — highlight connections">
+      <rect x="300" y="230" width="118" height="44" rx="8"></rect>
+      <text x="359" y="257" text-anchor="middle">Antilochus</text>
+    </g>
+    <g class="node" id="node-menelaus" data-node="menelaus" tabindex="0" role="button" aria-label="Menelaus — highlight connections">
+      <rect x="590" y="230" width="118" height="44" rx="8"></rect>
+      <text x="649" y="257" text-anchor="middle">Menelaus</text>
+    </g>
+    <g class="node" id="node-eumelus" data-node="eumelus" tabindex="0" role="button" aria-label="Eumelus — highlight connections">
+      <rect x="40" y="430" width="118" height="44" rx="8"></rect>
+      <text x="99" y="457" text-anchor="middle">Eumelus</text>
+    </g>
+    <g class="node" id="node-diomedes" data-node="diomedes" tabindex="0" role="button" aria-label="Diomedes — highlight connections">
+      <rect x="250" y="430" width="118" height="44" rx="8"></rect>
+      <text x="309" y="457" text-anchor="middle">Diomedes</text>
+    </g>
+    <g class="node" id="node-ajax" data-node="ajax" tabindex="0" role="button" aria-label="Ajax — highlight connections">
+      <rect x="490" y="430" width="118" height="44" rx="8"></rect>
+      <text x="549" y="457" text-anchor="middle">Ajax</text>
+    </g>
+    <g class="node" id="node-odysseus" data-node="odysseus" tabindex="0" role="button" aria-label="Odysseus — highlight connections">
+      <rect x="720" y="430" width="118" height="44" rx="8"></rect>
+      <text x="779" y="457" text-anchor="middle">Odysseus</text>
+    </g>
+  </svg>
+</section>
+
+<section id="decoder-section">
+  <h2>Decoder: Butler&rsquo;s Roman names</h2>
+  <p class="map-note">Butler translated in 1898 using Roman names for the gods &mdash; and calls Odysseus &ldquo;Ulysses,&rdquo; Diomedes &ldquo;Diomed.&rdquo; This retelling uses the Greek ones.</p>
+  <table class="decoder">
+    <thead><tr><th>Butler writes</th><th>This page says</th></tr></thead>
+    <tbody>
+      <tr><td>Jove</td><td>Zeus</td></tr>
+      <tr><td>Minerva</td><td>Athena</td></tr>
+      <tr><td>Neptune</td><td>Poseidon</td></tr>
+      <tr><td>Venus</td><td>Aphrodite</td></tr>
+      <tr><td>Vulcan</td><td>Hephaestus</td></tr>
+      <tr><td>Mars</td><td>Ares</td></tr>
+      <tr><td>Ulysses</td><td>Odysseus</td></tr>
+      <tr><td>Diomed</td><td>Diomedes</td></tr>
+    </tbody>
+  </table>
+</section>
+
+</div><!-- /side-inner -->
+</aside>
+
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  var CHARACTERS = {
+    achilles: {
+      name: 'Achilles',
+      role: 'Host, judge, chief mourner',
+      bio: "He buries his friend, slaughters twelve prisoners in his fury, then runs the games with perfect grace — smoothing quarrels, inventing consolation prizes. The man who wrecked the army over a prize now gives them away.",
+      hasNode: true
+    },
+    patroclus: {
+      name: 'Patroclus',
+      role: 'The ghost',
+      bio: "He comes back in a dream with two requests: burn me quickly, so the dead will let me across the river, and let our bones lie in a single urn. Achilles reaches for him and he vanishes like a vapour into the earth.",
+      hasNode: true
+    },
+    antilochus: {
+      name: 'Antilochus',
+      role: "Nestor's son",
+      bio: "He takes his father's lecture on cunning a little too broadly, forces Menelaus off the racing line, then yields the mare so gracefully — you are my elder and my better — that he gets it back.",
+      hasNode: true
+    },
+    menelaus: {
+      name: 'Menelaus',
+      role: 'King of Sparta',
+      bio: "Fouled at the narrow place, he files a formal protest, staff in hand — and the moment Antilochus yields, his anger melts like dew on ripening corn and he hands the mare straight back.",
+      hasNode: true
+    },
+    nestor: {
+      name: 'Nestor',
+      role: 'Old king of Pylos',
+      bio: "His racing lecture is an ode to cunning: the woodman does more by skill than by brute force. Achilles brings him a prize he never competed for — you will box and wrestle no more — and he is delighted.",
+      hasNode: true
+    },
+    eumelus: {
+      name: 'Eumelus',
+      role: 'Best of the charioteers',
+      bio: "Leading the race when Athena breaks his yoke: elbows, mouth, and nostrils torn, he drags his wrecked chariot in last — and Achilles, sorry for the best man, finds him a consolation prize.",
+      hasNode: true
+    },
+    diomedes: {
+      name: 'Diomedes',
+      role: 'Son of Tydeus',
+      bio: "Winner of the chariot race after Apollo slaps the whip from his hand and Athena hands it back. In the armed duel he keeps aiming at Ajax's neck until the crowd stops the fight.",
+      hasNode: true
+    },
+    odysseus: {
+      name: 'Odysseus',
+      role: 'The cunning one',
+      bio: "He wrestles giant Ajax to a draw with a knee-trick, then wins the foot race by praying to Athena in the final stretch. Skill and patronage, indistinguishable as usual.",
+      hasNode: true
+    },
+    ajax: {
+      name: 'Ajax',
+      role: 'Son of Telamon',
+      bio: "The army's biggest man cracks backbones with Odysseus until Achilles calls the wrestling a draw, and fights Diomedes in full armor until the spectators refuse to watch the ending.",
+      hasNode: true
+    },
+    agamemnon: {
+      name: 'Agamemnon',
+      role: 'Commander-in-chief',
+      bio: "He stands up for the spear-throw and Achilles hands him first prize without a single throw — free honor from the man whose prize he confiscated in Book One.",
+      hasNode: true
+    },
+    idomeneus: {
+      name: 'Idomeneus',
+      role: 'Captain of the Cretans',
+      bio: "From the best seat on the high ground he calls the race correctly, gets abused for it by the lesser Ajax, and offers to settle it with a wager — a quarrel Achilles shuts down in two sentences.",
+      hasNode: false
+    },
+    athena: {
+      name: 'Athena',
+      role: 'Goddess of wisdom and war',
+      bio: "Still fixing outcomes, now at sporting scale: she returns Diomedes' whip, breaks Eumelus' yoke, and trips the lesser Ajax into cow dung so Odysseus can win the foot race.",
+      hasNode: false
+    },
+    hector: {
+      name: 'Hector',
+      role: 'Unburied',
+      bio: "His body still lies in the dust by the ships, promised to the dogs — but Aphrodite keeps them off with rose oil and Apollo shades him with a cloud. The gods are tending what Achilles is still cursing.",
+      hasNode: false
+    }
+  };
+
+  var reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  var svg = document.getElementById('relmap');
+  var mapSection = document.getElementById('map-section');
+  var chip = document.getElementById('map-chip');
+  var chipLabel = document.getElementById('map-chip-label');
+  var chipClear = document.getElementById('map-chip-clear');
+
+  /* ---------- Tooltip ---------- */
+
+  var tip = document.createElement('div');
+  tip.id = 'char-tooltip';
+  tip.setAttribute('role', 'tooltip');
+  tip.hidden = true;
+  document.body.appendChild(tip);
+
+  var showTimer = null;
+  var hideTimer = null;
+  var tipTarget = null;
+
+  function renderTip(id) {
+    var c = CHARACTERS[id];
+    if (!c) return false;
+    var html =
+      '<div class="tip-name">' + c.name + '</div>' +
+      '<div class="tip-role">' + c.role + '</div>' +
+      '<div class="tip-bio">' + c.bio + '</div>';
+    if (c.hasNode) {
+      html += '<div class="tip-hint">Click to see them on the map</div>';
+    }
+    tip.innerHTML = html;
+    return true;
+  }
+
+  function positionTip(target) {
+    var r = target.getBoundingClientRect();
+    tip.style.left = '0px';
+    tip.style.top = '0px';
+    var tw = tip.offsetWidth;
+    var th = tip.offsetHeight;
+    var left = r.left + r.width / 2 - tw / 2;
+    left = Math.max(8, Math.min(left, window.innerWidth - tw - 8));
+    var top = r.top - th - 10;
+    if (top < 8) top = r.bottom + 10;
+    if (top + th > window.innerHeight - 8) {
+      top = Math.max(8, window.innerHeight - th - 8);
+    }
+    tip.style.left = left + 'px';
+    tip.style.top = top + 'px';
+  }
+
+  function showTip(target) {
+    var id = target.getAttribute('data-char');
+    if (!renderTip(id)) return;
+    if (tipTarget && tipTarget !== target) {
+      tipTarget.removeAttribute('aria-describedby');
+    }
+    tipTarget = target;
+    tip.hidden = false;
+    positionTip(target);
+    target.setAttribute('aria-describedby', 'char-tooltip');
+  }
+
+  function hideTip() {
+    clearTimeout(showTimer);
+    clearTimeout(hideTimer);
+    tip.hidden = true;
+    if (tipTarget) {
+      tipTarget.removeAttribute('aria-describedby');
+      tipTarget = null;
+    }
+  }
+
+  /* ---------- Map highlight ---------- */
+
+  var detail = document.getElementById('char-detail');
+  var glossaryEntries = Array.prototype.slice.call(
+    document.querySelectorAll('#glossary-section .person[data-char]')
+  );
+
+  function clearHighlight() {
+    svg.classList.remove('dimmed');
+    svg.querySelectorAll('.lit').forEach(function (el) { el.classList.remove('lit'); });
+    svg.querySelectorAll('.sel').forEach(function (el) { el.classList.remove('sel'); });
+    chip.classList.remove('on');
+    detail.hidden = true;
+    glossaryEntries.forEach(function (p) { p.hidden = false; });
+  }
+
+  function highlightChar(id) {
+    var c = CHARACTERS[id];
+    if (!c || !c.hasNode) return;
+    clearHighlight();
+    svg.classList.add('dimmed');
+    var lit = { };
+    lit[id] = true;
+    svg.querySelectorAll('[data-chars]').forEach(function (el) {
+      var chars = el.getAttribute('data-chars').split(',');
+      if (chars.indexOf(id) !== -1) {
+        el.classList.add('lit');
+        chars.forEach(function (ch) { lit[ch] = true; });
+      }
+    });
+    Object.keys(lit).forEach(function (ch) {
+      var node = document.getElementById('node-' + ch);
+      if (node) node.classList.add('lit');
+    });
+    var selNode = document.getElementById('node-' + id);
+    if (selNode) selNode.classList.add('sel');
+    chipLabel.textContent = 'Showing: ' + c.name + ' —';
+    chip.classList.add('on');
+    detail.innerHTML =
+      '<h3>' + c.name + '</h3>' +
+      '<p class="role">' + c.role + '</p>' +
+      '<p>' + c.bio + '</p>';
+    detail.hidden = false;
+    // Glossary shows only the characters in the highlighted relationships.
+    glossaryEntries.forEach(function (p) {
+      p.hidden = !lit[p.getAttribute('data-char')];
+    });
+  }
+
+  var wideLayout = window.matchMedia('(min-width: 920px)');
+  var sideInner = document.querySelector('.side-inner');
+
+  function scrollToMap() {
+    var behavior = reducedMotion.matches ? 'auto' : 'smooth';
+    if (wideLayout.matches) {
+      // Map is pinned at the top of the sticky sidebar; just make sure
+      // the sidebar's own scroll hasn't pushed it out of view.
+      sideInner.scrollTo({ top: 0, behavior: behavior });
+      return;
+    }
+    mapSection.scrollIntoView({ behavior: behavior, block: 'center' });
+  }
+
+  function activate(id, scroll) {
+    var c = CHARACTERS[id];
+    if (!c || !c.hasNode) return;
+    hideTip();
+    highlightChar(id);
+    if (scroll) scrollToMap();
+  }
+
+  /* ---------- Essay spans ---------- */
+
+  var touchArmed = null;
+
+  document.querySelectorAll('.char').forEach(function (span) {
+    span.addEventListener('mouseenter', function () {
+      clearTimeout(hideTimer);
+      clearTimeout(showTimer);
+      showTimer = setTimeout(function () { showTip(span); }, 150);
+    });
+
+    span.addEventListener('mouseleave', function () {
+      clearTimeout(showTimer);
+      clearTimeout(hideTimer);
+      hideTimer = setTimeout(function () {
+        if (document.activeElement !== span || !tipTarget) hideTip();
+      }, 80);
+    });
+
+    span.addEventListener('focus', function () { showTip(span); });
+    span.addEventListener('blur', function () { hideTip(); });
+
+    span.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar') {
+        e.preventDefault();
+        activate(span.getAttribute('data-char'), true);
+      }
+    });
+
+    // Touch: first tap shows tooltip, second tap activates.
+    span.addEventListener('touchend', function (e) {
+      if (touchArmed !== span) {
+        e.preventDefault();
+        touchArmed = span;
+        clearTimeout(showTimer);
+        showTip(span);
+      } else {
+        touchArmed = null;
+      }
+    });
+
+    span.addEventListener('click', function () {
+      activate(span.getAttribute('data-char'), true);
+    });
+  });
+
+  document.addEventListener('touchstart', function (e) {
+    if (touchArmed && !touchArmed.contains(e.target)) {
+      touchArmed = null;
+      hideTip();
+    }
+  }, { passive: true });
+
+  /* ---------- Glossary entries ---------- */
+
+  document.querySelectorAll('.person').forEach(function (entry) {
+    var id = entry.getAttribute('data-char');
+    var c = CHARACTERS[id];
+    if (!c || !c.hasNode) return;
+    entry.classList.add('mappable');
+    entry.setAttribute('tabindex', '0');
+    entry.setAttribute('role', 'button');
+    entry.setAttribute('aria-label', c.name + ' — show on the relationship map');
+    entry.addEventListener('click', function () { activate(id, true); });
+    entry.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar') {
+        e.preventDefault();
+        activate(id, true);
+      }
+    });
+  });
+
+  /* ---------- Map nodes and background ---------- */
+
+  svg.querySelectorAll('.node').forEach(function (node) {
+    var id = node.getAttribute('data-node');
+    node.addEventListener('click', function (e) {
+      e.stopPropagation();
+      activate(id, false);
+    });
+    node.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar') {
+        e.preventDefault();
+        activate(id, false);
+      }
+    });
+  });
+
+  svg.addEventListener('click', function (e) {
+    if (!e.target.closest('.node')) clearHighlight();
+  });
+
+  chipClear.addEventListener('click', clearHighlight);
+
+  /* ---------- Quizzes: gate the essay, track progress ---------- */
+
+  var PROGRESS_KEY = 'iliad:' +
+    (location.pathname.split('/').pop() || 'book').replace('.html', '');
+  var quizzes = Array.prototype.slice.call(document.querySelectorAll('.quiz'));
+  var article = document.querySelector('article');
+  var progressBox = document.getElementById('chapter-progress');
+  var progressLabel = document.getElementById('chapter-progress-label');
+  var progressFill = document.querySelector('#chapter-progress .fill');
+
+  function loadPassed() {
+    try {
+      var arr = JSON.parse(localStorage.getItem(PROGRESS_KEY) || '[]');
+      return Array.isArray(arr) ? arr : [];
+    } catch (e) { return []; }
+  }
+  function savePassed() {
+    try { localStorage.setItem(PROGRESS_KEY, JSON.stringify(passed)); }
+    catch (e) { /* private browsing: progress just won't persist */ }
+  }
+
+  var passed = loadPassed();
+
+  var hint = document.createElement('div');
+  hint.className = 'continue-hint';
+  hint.textContent = 'Pick the right answer above to unlock the rest of the chapter.';
+
+  function updateProgress() {
+    var total = quizzes.length;
+    var n = Math.min(passed.length, total);
+    progressFill.style.width = (total ? Math.round((n / total) * 100) : 100) + '%';
+    if (n === total) {
+      progressBox.classList.add('done');
+      progressLabel.textContent = 'Chapter complete — all ' + total + ' checkpoints passed';
+    } else {
+      progressBox.classList.remove('done');
+      progressLabel.textContent = 'Progress: ' + n + ' of ' + total + ' checkpoints';
+    }
+    renderRail();
+  }
+
+  // Everything after the first unpassed quiz stays hidden until the
+  // reader picks that quiz's correct answer.
+  function applyGate() {
+    var firstOpen = -1;
+    for (var i = 0; i < quizzes.length; i++) {
+      if (passed.indexOf(i) === -1) { firstOpen = i; break; }
+    }
+    if (hint.parentNode) hint.parentNode.removeChild(hint);
+    var lock = false;
+    Array.prototype.slice.call(article.children).forEach(function (el) {
+      el.classList.toggle('locked', lock);
+      if (firstOpen !== -1 && el === quizzes[firstOpen]) lock = true;
+    });
+    if (firstOpen !== -1) {
+      quizzes[firstOpen].insertAdjacentElement('afterend', hint);
+    }
+    updateProgress();
+  }
+
+  function renderAnswered(quiz) {
+    quiz.classList.add('answered');
+    var right = quiz.querySelector('[data-opt="' + quiz.getAttribute('data-answer') + '"]');
+    if (right) right.classList.add('right');
+    quiz.querySelectorAll('.quiz-opt').forEach(function (b) {
+      b.setAttribute('aria-disabled', 'true');
+    });
+    var why = quiz.querySelector('.quiz-why');
+    why.hidden = false;
+    why.setAttribute('role', 'status');
+  }
+
+  quizzes.forEach(function (quiz, index) {
+    if (passed.indexOf(index) !== -1) renderAnswered(quiz);
+    var answer = quiz.getAttribute('data-answer');
+    quiz.querySelectorAll('.quiz-opt').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        if (quiz.classList.contains('answered')) return;
+        if (btn.getAttribute('data-opt') === answer) {
+          renderAnswered(quiz);
+          if (passed.indexOf(index) === -1) passed.push(index);
+          savePassed();
+          applyGate();
+        } else {
+          btn.classList.add('wrong-pick');
+        }
+      });
+    });
+  });
+
+  /* ---------- Checkpoint rail ---------- */
+
+  var railCount = document.getElementById('rail-count');
+  var railTrack = document.getElementById('rail-track');
+  var railDots = quizzes.map(function (quiz, i) {
+    var dot = document.createElement('button');
+    dot.type = 'button';
+    dot.className = 'rail-dot';
+    dot.textContent = i + 1;
+    dot.addEventListener('click', function () {
+      if (quiz.classList.contains('locked')) return;
+      quiz.scrollIntoView({
+        behavior: reducedMotion.matches ? 'auto' : 'smooth',
+        block: 'center'
+      });
+    });
+    railTrack.appendChild(dot);
+    return dot;
+  });
+
+  function renderRail() {
+    quizzes.forEach(function (quiz, i) {
+      var dot = railDots[i];
+      dot.classList.remove('passed', 'current');
+      var state = 'locked';
+      if (passed.indexOf(i) !== -1) {
+        dot.classList.add('passed');
+        state = 'passed';
+      } else if (!quiz.classList.contains('locked')) {
+        dot.classList.add('current');
+        state = 'current';
+      }
+      dot.setAttribute('aria-label', 'Checkpoint ' + (i + 1) + ' — ' + state);
+      dot.setAttribute('aria-disabled', state === 'locked' ? 'true' : 'false');
+    });
+    var n = Math.min(passed.length, quizzes.length);
+    railCount.textContent = n + '/' + quizzes.length;
+    railCount.classList.toggle('done', n === quizzes.length);
+  }
+
+  applyGate();
+
+  /* ---------- Global ---------- */
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') {
+      hideTip();
+      clearHighlight();
+    }
+  });
+
+  window.addEventListener('scroll', function () {
+    if (!tip.hidden && tipTarget) positionTip(tipTarget);
+  }, { passive: true });
+
+  window.addEventListener('resize', function () {
+    if (!tip.hidden && tipTarget) positionTip(tipTarget);
+  });
+})();
+</script>
+</body>
+</html>
