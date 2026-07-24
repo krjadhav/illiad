@@ -408,6 +408,29 @@
     font-size: 15px;
     line-height: 1.55;
   }
+  .char-popover-card #map-section,
+  .char-popover-card #decoder-section {
+    margin-top: 22px;
+  }
+  .char-popover-card #map-section h2,
+  .char-popover-card #decoder-section h2 {
+    font-size: 17px;
+    margin: 0 0 10px;
+  }
+  .char-popover-card #map-section .map-note,
+  .char-popover-card #decoder-section .map-note {
+    font-size: 12px;
+  }
+  .char-popover-card #relmap {
+    max-height: 46vh;
+  }
+  .char-popover-card table.decoder {
+    font-size: 13px;
+  }
+  .char-popover-card table.decoder th,
+  .char-popover-card table.decoder td {
+    padding: 7px 9px;
+  }
   .char-popover-close {
     flex: 0 0 auto;
     font-family: var(--sans);
@@ -1070,6 +1093,11 @@
   var reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
   var svg = document.getElementById('relmap');
   var mapSection = document.getElementById('map-section');
+  var decoderSection = document.getElementById('decoder-section');
+  var mapPlaceholder = document.createComment('mobile map home');
+  var decoderPlaceholder = document.createComment('mobile decoder home');
+  mapSection.parentNode.insertBefore(mapPlaceholder, mapSection);
+  decoderSection.parentNode.insertBefore(decoderPlaceholder, decoderSection);
   var chip = document.getElementById('map-chip');
   var chipLabel = document.getElementById('map-chip-label');
   var chipClear = document.getElementById('map-chip-clear');
@@ -1095,6 +1123,8 @@
         '<button type="button" class="char-popover-close">Close</button>' +
       '</div>' +
       '<div class="char-popover-bio" id="char-popover-bio"></div>' +
+      '<div class="char-popover-map" id="char-popover-map"></div>' +
+      '<div class="char-popover-decoder" id="char-popover-decoder"></div>' +
     '</div>';
   document.body.appendChild(mobilePopover);
 
@@ -1102,6 +1132,8 @@
   var hideTimer = null;
   var tipTarget = null;
   var popoverReturnTarget = null;
+  var popoverMapHost = mobilePopover.querySelector('#char-popover-map');
+  var popoverDecoderHost = mobilePopover.querySelector('#char-popover-decoder');
 
   function renderTip(id) {
     var c = CHARACTERS[id];
@@ -1161,10 +1193,13 @@
     if (!c) return;
     hideTip();
     if (c.hasNode) highlightChar(id);
+    else clearHighlight();
     popoverReturnTarget = target || document.activeElement;
     mobilePopover.querySelector('#char-popover-name').textContent = c.name;
     mobilePopover.querySelector('#char-popover-role').textContent = c.role;
     mobilePopover.querySelector('#char-popover-bio').textContent = c.bio;
+    popoverMapHost.appendChild(mapSection);
+    popoverDecoderHost.appendChild(decoderSection);
     mobilePopover.hidden = false;
     document.documentElement.classList.add('char-popover-open');
     mobilePopover.querySelector('.char-popover-close').focus({ preventScroll: true });
@@ -1174,6 +1209,8 @@
     if (mobilePopover.hidden) return;
     mobilePopover.hidden = true;
     document.documentElement.classList.remove('char-popover-open');
+    mapPlaceholder.parentNode.insertBefore(mapSection, mapPlaceholder.nextSibling);
+    decoderPlaceholder.parentNode.insertBefore(decoderSection, decoderPlaceholder.nextSibling);
     if (popoverReturnTarget && typeof popoverReturnTarget.focus === 'function') {
       popoverReturnTarget.focus({ preventScroll: true });
     }
@@ -1498,7 +1535,10 @@
 
   document.addEventListener('keydown', function (e) {
     if (e.key === 'Escape') {
-      closeMobilePopover();
+      if (!mobilePopover.hidden) {
+        closeMobilePopover();
+        return;
+      }
       hideTip();
       clearHighlight();
     }
