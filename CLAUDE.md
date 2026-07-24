@@ -2,14 +2,14 @@
 
 ## What this is
 
-Interactive retellings of the Iliad (Samuel Butler's translation, rewritten in Paul Graham's essay style), one self-contained HTML page per book. `book_1.html` is the reference implementation — treat it as the template for every new chapter.
+Interactive retellings of the Iliad (Samuel Butler's translation, rewritten in Paul Graham's essay style), one self-contained HTML page per book. `the_illiad_chapters/book_1.html` is the reference implementation — treat it as the template for every new chapter.
 
 ## Repo layout
 
 - `index.html` — homepage: chapter registry for the whole work, per-chapter and overall progress read from localStorage, "Coming soon" cards for unpublished books. Deployed via GitHub Pages (push to main = deploy).
+- `the_illiad_chapters/book_N.html` — the finished page for book N. Committed.
 - `raw/book_N.md` — Butler source text per book. Read-only reference, gitignored, never edit or commit.
-- `book_N.html` — the finished page for book N. Committed.
-- New chapter workflow: user drops `raw/book_N.md`, you produce `book_N.html` by following "Adding a chapter" below.
+- New chapter workflow: user drops `raw/book_N.md`, you produce `the_illiad_chapters/book_N.html` by following "Adding a chapter" below.
 
 ## Hard constraints (every chapter)
 
@@ -17,9 +17,9 @@ Interactive retellings of the Iliad (Samuel Butler's translation, rewritten in P
 - **Palette is fixed.** CSS vars in `:root`: `--bg`, `--surface`, `--text`, `--muted`, `--faint`, `--clay` (accent). Serif (`--serif`) for prose and names, sans (`--sans`) for UI chrome. Don't change them — chapters must look like one publication.
 - **Character spans are static HTML.** Essay names are wrapped by hand in `<span class="char" data-char="ID" tabindex="0" role="button">`. Never wrap names with a runtime regex — it would catch the SVG, glossary, and decoder table. Butler's Roman names are aliases (e.g. "Ulysses" → `odysseus`, "Jove" → `zeus`): wrap the alias text, point `data-char` at the Greek id.
 
-## Adding a chapter (book_N.html)
+## Adding a chapter (the_illiad_chapters/book_N.html)
 
-1. Copy the newest existing `book_N.html` — CSS and the whole `<script>` are chapter-agnostic; only content changes.
+1. Copy the newest existing `the_illiad_chapters/book_N.html` — CSS and the whole `<script>` are chapter-agnostic; only content changes.
 2. Read `raw/book_N.md`. Rewrite as a PG-style essay: plain words, short sentences, talking to a smart friend; lead with the human mechanism (status, incentives, honor), not plot summary.
 3. Rebuild the chapter-specific parts, keeping ids stable across books (a character keeps the same id in every chapter):
    - `CHARACTERS` object — this book's cast only; `hasNode: false` for anyone left off the map.
@@ -28,7 +28,7 @@ Interactive retellings of the Iliad (Samuel Butler's translation, rewritten in P
    - SVG map — nodes for the major cast, `data-chars` on every edge path AND its label.
    - Quizzes — ~5 `.quiz` blocks, each right after the passage it tests, aimed at the human-condition point of that passage, not plot trivia.
    - Decoder table — only rows for Roman names that actually appear in this book's source.
-4. Register the chapter in `index.html`'s `WORK.chapters` array (set `file` and `checkpoints` = number of quizzes), update README's page list, and add the Contents/prev/next links in `.book-nav` (new page links back, previous page links forward). Verify (below), then commit the html — never `raw/`. Pushing main deploys GitHub Pages.
+4. Register the chapter in `index.html`'s `WORK.chapters` array (set `file` to `the_illiad_chapters/book_N.html` and `checkpoints` = number of quizzes), update README's page list, and add the Contents/prev/next links in `.book-nav` (new page links back to `../index.html`, previous page links forward). Verify (below), then commit the html — never `raw/`. Pushing main deploys GitHub Pages.
 
 ## Architecture (identical in every chapter)
 
