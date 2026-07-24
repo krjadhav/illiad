@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Iliad, retold</title>
+<style>
+  :root {
+    --bg: #16110c;
+    --surface: #221c17;
+    --text: #e7dfd3;
+    --muted: #a89880;
+    --faint: #3b3229;
+    --clay: #c0714f;
+    --serif: Georgia, 'Times New Roman', serif;
+    --sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { background: var(--bg); }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--serif);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .page {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 64px 20px 96px;
+  }
+
+  .kicker {
+    font-family: var(--sans);
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--clay);
+    margin-bottom: 14px;
+  }
+
+  h1 {
+    font-size: 44px;
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+    margin-bottom: 12px;
+  }
+
+  .subtitle {
+    font-size: 19px;
+    color: var(--muted);
+    font-style: italic;
+    max-width: 640px;
+  }
+
+  .overall {
+    margin: 32px 0 40px;
+    padding: 18px 20px;
+    background: var(--surface);
+    border: 1px solid var(--faint);
+    border-radius: 10px;
+    font-family: var(--sans);
+  }
+  .overall .stats {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 12px;
+    flex-wrap: wrap;
+    font-size: 14px;
+    margin-bottom: 10px;
+  }
+  .overall .stats b { color: var(--clay); }
+  .overall .bar {
+    height: 6px;
+    background: var(--faint);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  .overall .fill {
+    height: 100%;
+    width: 0;
+    background: var(--clay);
+    border-radius: 3px;
+    transition: width 0.3s ease;
+  }
+  .overall .reset {
+    font-size: 12px;
+    color: var(--muted);
+    background: none;
+    border: none;
+    cursor: pointer;
+    text-decoration: underline dotted;
+    padding: 0;
+  }
+  .overall .reset:hover { color: var(--clay); }
+
+  h2 {
+    font-size: 22px;
+    margin: 40px 0 16px;
+    letter-spacing: -0.01em;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(215px, 1fr));
+    gap: 12px;
+    list-style: none;
+  }
+
+  .card {
+    display: block;
+    background: var(--surface);
+    border: 1px solid var(--faint);
+    border-radius: 10px;
+    padding: 14px 16px;
+    text-decoration: none;
+    color: var(--text);
+    min-height: 108px;
+  }
+  a.card:hover { border-color: var(--clay); }
+  a.card:focus-visible { outline: 1px dashed var(--clay); outline-offset: 2px; }
+  .card .num {
+    font-family: var(--sans);
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--clay);
+    margin-bottom: 6px;
+  }
+  .card .title {
+    font-size: 16.5px;
+    line-height: 1.35;
+    margin-bottom: 10px;
+  }
+  .card .meta {
+    font-family: var(--sans);
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .card .meta.done { color: var(--clay); }
+  .card .bar {
+    height: 4px;
+    background: var(--faint);
+    border-radius: 2px;
+    overflow: hidden;
+    margin-top: 6px;
+  }
+  .card .fill {
+    height: 100%;
+    width: 0;
+    background: var(--clay);
+    border-radius: 2px;
+  }
+  .card.soon {
+    border-style: dashed;
+    color: var(--muted);
+  }
+  .card.soon .num { color: var(--muted); }
+  .card.soon .title { color: var(--muted); }
+
+  .future {
+    margin-top: 48px;
+    padding: 16px 20px;
+    border: 1px dashed var(--faint);
+    border-radius: 10px;
+    font-family: var(--sans);
+    font-size: 14px;
+    color: var(--muted);
+  }
+  .future b { color: var(--text); font-family: var(--serif); }
+
+  @media (prefers-reduced-motion: reduce) {
+    .overall .fill { transition: none; }
+  }
+  @media (max-width: 480px) {
+    h1 { font-size: 34px; }
+    .page { padding-top: 44px; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+<header>
+  <div class="kicker">Epics, retold</div>
+  <h1>The Iliad</h1>
+  <p class="subtitle">Samuel Butler&rsquo;s translation, rewritten one book at a time in plain language &mdash; with character maps, glossaries, and checkpoints along the way. Twenty-four books; the anger of Achilles from first insult to last funeral.</p>
+</header>
+
+<div class="overall" id="overall">
+  <div class="stats">
+    <span id="overall-label">&hellip;</span>
+    <button type="button" class="reset" id="reset-progress">reset progress</button>
+  </div>
+  <div class="bar"><div class="fill" id="overall-fill"></div></div>
+</div>
+
+<h2>The books</h2>
+<ul class="grid" id="chapter-grid"></ul>
+
+<div class="future">
+  <b>The Odyssey</b> &mdash; same treatment, someday. The homecoming has to wait for the war to end.
+</div>
+
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  // One entry per book of the Iliad. To publish a new chapter: set its
+  // `file` and `checkpoints` (number of quizzes on that page).
+  var WORK = {
+    id: 'iliad',
+    chapters: [
+      { n: 1,  title: 'The Anger of Achilles',                file: 'book_1.html', checkpoints: 5 },
+      { n: 2,  title: 'The Lie and the List',                 file: 'book_2.html', checkpoints: 5 },
+      { n: 3,  title: 'The Duel That Should Have Ended It',   file: 'book_3.html', checkpoints: 5 },
+      { n: 4,  title: 'Breaking the Truce',                   file: 'book_4.html', checkpoints: 5 },
+      { n: 5,  title: 'The Man Who Wounded Gods',             file: 'book_5.html', checkpoints: 5 },
+      { n: 6,  title: 'Hector and Andromache' },
+      { n: 7,  title: 'Ajax Duels Hector' },
+      { n: 8,  title: 'Zeus Tips the Scales' },
+      { n: 9,  title: 'The Embassy to Achilles' },
+      { n: 10, title: 'The Night Raid' },
+      { n: 11, title: 'Agamemnon’s Day' },
+      { n: 12, title: 'The Wall Falls' },
+      { n: 13, title: 'Battle at the Ships' },
+      { n: 14, title: 'Hera Deceives Zeus' },
+      { n: 15, title: 'Zeus Wakes' },
+      { n: 16, title: 'Patroclus' },
+      { n: 17, title: 'The Fight Over the Body' },
+      { n: 18, title: 'The Shield of Achilles' },
+      { n: 19, title: 'The Reconciliation' },
+      { n: 20, title: 'The Gods Take the Field' },
+      { n: 21, title: 'Achilles Fights the River' },
+      { n: 22, title: 'The Death of Hector' },
+      { n: 23, title: 'The Funeral Games' },
+      { n: 24, title: 'Priam and Achilles' }
+    ]
+  };
+
+  function passedFor(chapter) {
+    try {
+      var raw = localStorage.getItem(WORK.id + ':book_' + chapter.n);
+      var arr = raw ? JSON.parse(raw) : [];
+      if (!Array.isArray(arr)) return 0;
+      return Math.min(arr.length, chapter.checkpoints || 0);
+    } catch (e) { return 0; }
+  }
+
+  var grid = document.getElementById('chapter-grid');
+  var totalAvailable = 0;
+  var totalPassed = 0;
+  var booksComplete = 0;
+  var booksAvailable = 0;
+
+  WORK.chapters.forEach(function (ch) {
+    var li = document.createElement('li');
+    if (ch.file) {
+      booksAvailable++;
+      totalAvailable += ch.checkpoints;
+      var passed = passedFor(ch);
+      totalPassed += passed;
+      var done = passed >= ch.checkpoints;
+      if (done) booksComplete++;
+      var a = document.createElement('a');
+      a.className = 'card';
+      a.href = ch.file;
+      a.innerHTML =
+        '<div class="num">Book ' + ch.n + '</div>' +
+        '<div class="title">' + ch.title + '</div>' +
+        '<div class="meta' + (done ? ' done' : '') + '">' +
+          (done ? 'Complete ✓' : passed + ' of ' + ch.checkpoints + ' checkpoints') +
+        '</div>' +
+        '<div class="bar"><div class="fill" style="width:' +
+          Math.round((passed / ch.checkpoints) * 100) + '%"></div></div>';
+      li.appendChild(a);
+    } else {
+      var div = document.createElement('div');
+      div.className = 'card soon';
+      div.innerHTML =
+        '<div class="num">Book ' + ch.n + '</div>' +
+        '<div class="title">' + ch.title + '</div>' +
+        '<div class="meta">Coming soon</div>';
+      li.appendChild(div);
+    }
+    grid.appendChild(li);
+  });
+
+  var label = document.getElementById('overall-label');
+  var fill = document.getElementById('overall-fill');
+  label.innerHTML =
+    '<b>' + booksComplete + '</b> of ' + WORK.chapters.length + ' books complete &middot; ' +
+    totalPassed + ' of ' + totalAvailable + ' checkpoints in the ' +
+    booksAvailable + ' books published so far';
+  fill.style.width = (totalAvailable ? Math.round((totalPassed / totalAvailable) * 100) : 0) + '%';
+
+  document.getElementById('reset-progress').addEventListener('click', function () {
+    if (!confirm('Reset all reading progress?')) return;
+    WORK.chapters.forEach(function (ch) {
+      try { localStorage.removeItem(WORK.id + ':book_' + ch.n); } catch (e) { /* ignore */ }
+    });
+    location.reload();
+  });
+})();
+</script>
+</body>
+</html>

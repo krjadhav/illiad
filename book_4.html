@@ -200,6 +200,45 @@
     border-top: 1px solid var(--faint);
   }
 
+  /* Reading progress + gating */
+  #chapter-progress {
+    font-family: var(--sans);
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 16px;
+    max-width: 420px;
+  }
+  #chapter-progress.done { color: var(--clay); }
+  #chapter-progress .bar {
+    height: 4px;
+    background: var(--faint);
+    border-radius: 2px;
+    overflow: hidden;
+    margin-top: 6px;
+  }
+  #chapter-progress .fill {
+    height: 100%;
+    width: 0;
+    background: var(--clay);
+    border-radius: 2px;
+    transition: width 0.3s ease;
+  }
+  .locked { display: none; }
+  .continue-hint {
+    font-family: var(--sans);
+    font-size: 13px;
+    color: var(--muted);
+    border: 1px dashed var(--faint);
+    border-radius: 8px;
+    padding: 10px 14px;
+    margin: 1.5em 0;
+  }
+  .quiz .quiz-opt.wrong-pick { border-style: dashed; opacity: 0.6; }
+  .quiz .quiz-opt.wrong-pick::before { content: "\2717\00a0\00a0"; color: var(--muted); }
+  @media (prefers-reduced-motion: reduce) {
+    #chapter-progress .fill { transition: none; }
+  }
+
   /* Tooltip */
   #char-tooltip {
     position: fixed;
@@ -403,10 +442,14 @@
 <div class="main-col">
 
 <header>
-  <nav class="book-nav"><a href="book_3.html">&larr; Book 3</a> &nbsp;&middot;&nbsp; <a href="book_5.html">Book 5 &rarr;</a></nav>
+  <nav class="book-nav"><a href="index.html">&uarr; Contents</a> &nbsp;&middot;&nbsp; <a href="book_3.html">&larr; Book 3</a> &nbsp;&middot;&nbsp; <a href="book_5.html">Book 5 &rarr;</a></nav>
   <div class="kicker">The Iliad, retold</div>
   <h1>Book 4</h1>
   <p class="subtitle">Book Four, after Samuel Butler&rsquo;s translation &mdash; the gods trade cities over drinks, one arrow ends the peace, and the dying start getting names.</p>
+  <div id="chapter-progress" aria-live="polite">
+    <span id="chapter-progress-label"></span>
+    <div class="bar"><div class="fill"></div></div>
+  </div>
 </header>
 
 <hr class="rule">
@@ -1065,26 +1108,96 @@
 
   chipClear.addEventListener('click', clearHighlight);
 
-  /* ---------- Quizzes ---------- */
+  /* ---------- Quizzes: gate the essay, track progress ---------- */
 
-  document.querySelectorAll('.quiz').forEach(function (quiz) {
+  var PROGRESS_KEY = 'iliad:' +
+    (location.pathname.split('/').pop() || 'book').replace('.html', '');
+  var quizzes = Array.prototype.slice.call(document.querySelectorAll('.quiz'));
+  var article = document.querySelector('article');
+  var progressBox = document.getElementById('chapter-progress');
+  var progressLabel = document.getElementById('chapter-progress-label');
+  var progressFill = document.querySelector('#chapter-progress .fill');
+
+  function loadPassed() {
+    try {
+      var arr = JSON.parse(localStorage.getItem(PROGRESS_KEY) || '[]');
+      return Array.isArray(arr) ? arr : [];
+    } catch (e) { return []; }
+  }
+  function savePassed() {
+    try { localStorage.setItem(PROGRESS_KEY, JSON.stringify(passed)); }
+    catch (e) { /* private browsing: progress just won't persist */ }
+  }
+
+  var passed = loadPassed();
+
+  var hint = document.createElement('div');
+  hint.className = 'continue-hint';
+  hint.textContent = 'Pick the right answer above to unlock the rest of the chapter.';
+
+  function updateProgress() {
+    var total = quizzes.length;
+    var n = Math.min(passed.length, total);
+    progressFill.style.width = (total ? Math.round((n / total) * 100) : 100) + '%';
+    if (n === total) {
+      progressBox.classList.add('done');
+      progressLabel.textContent = 'Chapter complete — all ' + total + ' checkpoints passed';
+    } else {
+      progressBox.classList.remove('done');
+      progressLabel.textContent = 'Progress: ' + n + ' of ' + total + ' checkpoints';
+    }
+  }
+
+  // Everything after the first unpassed quiz stays hidden until the
+  // reader picks that quiz's correct answer.
+  function applyGate() {
+    var firstOpen = -1;
+    for (var i = 0; i < quizzes.length; i++) {
+      if (passed.indexOf(i) === -1) { firstOpen = i; break; }
+    }
+    if (hint.parentNode) hint.parentNode.removeChild(hint);
+    var lock = false;
+    Array.prototype.slice.call(article.children).forEach(function (el) {
+      el.classList.toggle('locked', lock);
+      if (firstOpen !== -1 && el === quizzes[firstOpen]) lock = true;
+    });
+    if (firstOpen !== -1) {
+      quizzes[firstOpen].insertAdjacentElement('afterend', hint);
+    }
+    updateProgress();
+  }
+
+  function renderAnswered(quiz) {
+    quiz.classList.add('answered');
+    var right = quiz.querySelector('[data-opt="' + quiz.getAttribute('data-answer') + '"]');
+    if (right) right.classList.add('right');
+    quiz.querySelectorAll('.quiz-opt').forEach(function (b) {
+      b.setAttribute('aria-disabled', 'true');
+    });
+    var why = quiz.querySelector('.quiz-why');
+    why.hidden = false;
+    why.setAttribute('role', 'status');
+  }
+
+  quizzes.forEach(function (quiz, index) {
+    if (passed.indexOf(index) !== -1) renderAnswered(quiz);
     var answer = quiz.getAttribute('data-answer');
-    var opts = quiz.querySelectorAll('.quiz-opt');
-    opts.forEach(function (btn) {
+    quiz.querySelectorAll('.quiz-opt').forEach(function (btn) {
       btn.addEventListener('click', function () {
         if (quiz.classList.contains('answered')) return;
-        quiz.classList.add('answered');
-        if (btn.getAttribute('data-opt') !== answer) {
+        if (btn.getAttribute('data-opt') === answer) {
+          renderAnswered(quiz);
+          if (passed.indexOf(index) === -1) passed.push(index);
+          savePassed();
+          applyGate();
+        } else {
           btn.classList.add('wrong-pick');
         }
-        quiz.querySelector('[data-opt="' + answer + '"]').classList.add('right');
-        opts.forEach(function (b) { b.setAttribute('aria-disabled', 'true'); });
-        var why = quiz.querySelector('.quiz-why');
-        why.hidden = false;
-        why.setAttribute('role', 'status');
       });
     });
   });
+
+  applyGate();
 
   /* ---------- Global ---------- */
 
