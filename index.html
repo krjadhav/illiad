@@ -117,14 +117,16 @@
   }
 
   .card {
-    display: block;
+    display: flex;
+    flex-direction: column;
+    position: relative;
     background: var(--surface);
     border: 1px solid var(--faint);
     border-radius: 10px;
     padding: 14px 16px;
     text-decoration: none;
     color: var(--text);
-    min-height: 152px;
+    min-height: 244px;
   }
   a.card:hover { border-color: var(--clay); }
   a.card:focus-visible { outline: 1px dashed var(--clay); outline-offset: 2px; }
@@ -152,8 +154,13 @@
     line-height: 1.45;
     color: var(--muted);
     margin: -2px 0 10px;
+    display: -webkit-box;
+    -webkit-line-clamp: 7;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
   }
   .card .meta.done { color: var(--clay); }
+  .card .meta { margin-top: auto; }
   .card .progress-row {
     display: grid;
     grid-template-columns: 1fr auto;
@@ -186,6 +193,24 @@
   }
   .card.soon .num { color: var(--muted); }
   .card.soon .title { color: var(--muted); }
+
+  .summary-popover {
+    position: fixed;
+    z-index: 20;
+    width: min(420px, calc(100vw - 32px));
+    max-height: min(420px, calc(100vh - 32px));
+    overflow: auto;
+    padding: 14px 16px;
+    background: #261f19;
+    border: 1px solid var(--clay);
+    border-radius: 8px;
+    color: var(--text);
+    box-shadow: 0 18px 48px rgba(0, 0, 0, 0.38);
+    font-family: var(--sans);
+    font-size: 13px;
+    line-height: 1.55;
+  }
+  .summary-popover[hidden] { display: none; }
 
   .future {
     margin-top: 48px;
@@ -226,6 +251,7 @@
 
 <h2>The books</h2>
 <ul class="grid" id="chapter-grid"></ul>
+<div class="summary-popover" id="summary-popover" role="tooltip" hidden></div>
 
 <div class="future">
   <b>The Odyssey</b>: same treatment, someday. The homecoming has to wait for the war to end.
@@ -278,7 +304,44 @@
     } catch (e) { return 0; }
   }
 
+  function escapeHtml(value) {
+    return String(value).replace(/[&<>"']/g, function (ch) {
+      return ({
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#39;'
+      })[ch];
+    });
+  }
+
+  function positionSummary(card, popover) {
+    var gap = 10;
+    var rect = card.getBoundingClientRect();
+    popover.hidden = false;
+    var popRect = popover.getBoundingClientRect();
+    var left = rect.left;
+    var top = rect.bottom + gap;
+
+    if (left + popRect.width > window.innerWidth - 16) {
+      left = window.innerWidth - popRect.width - 16;
+    }
+    if (top + popRect.height > window.innerHeight - 16) {
+      top = Math.max(16, rect.top - popRect.height - gap);
+    }
+
+    popover.style.left = Math.max(16, left) + 'px';
+    popover.style.top = top + 'px';
+  }
+
+  function hideSummary() {
+    summaryPopover.hidden = true;
+  }
+
   var grid = document.getElementById('chapter-grid');
+  var summaryPopover = document.getElementById('summary-popover');
+  var summaryHideTimer = null;
   var totalAvailable = 0;
   var totalPassed = 0;
   var booksComplete = 0;
@@ -297,10 +360,11 @@
       var a = document.createElement('a');
       a.className = 'card';
       a.href = ch.file;
+      a.dataset.summary = ch.summary;
       a.innerHTML =
         '<div class="num">Book ' + ch.n + '</div>' +
-        '<div class="title">' + ch.title + '</div>' +
-        '<div class="preview">' + ch.summary + '</div>' +
+        '<div class="title">' + escapeHtml(ch.title) + '</div>' +
+        '<div class="preview">' + escapeHtml(ch.summary) + '</div>' +
         '<div class="meta' + (done ? ' done' : '') + '">' +
           (done ? 'Complete ✓' : passed + ' of ' + ch.checkpoints + ' checkpoints') +
         '</div>' +
@@ -309,6 +373,22 @@
             chapterPercent + '%"></div></div>' +
           '<div class="percent">' + chapterPercent + '%</div>' +
         '</div>';
+      a.addEventListener('mouseenter', function () {
+        clearTimeout(summaryHideTimer);
+        summaryPopover.textContent = this.dataset.summary || '';
+        positionSummary(this, summaryPopover);
+      });
+      a.addEventListener('focus', function () {
+        clearTimeout(summaryHideTimer);
+        summaryPopover.textContent = this.dataset.summary || '';
+        positionSummary(this, summaryPopover);
+      });
+      a.addEventListener('mouseleave', function () {
+        summaryHideTimer = setTimeout(hideSummary, 120);
+      });
+      a.addEventListener('blur', function () {
+        summaryHideTimer = setTimeout(hideSummary, 120);
+      });
       li.appendChild(a);
     } else {
       var div = document.createElement('div');
@@ -321,6 +401,15 @@
     }
     grid.appendChild(li);
   });
+
+  summaryPopover.addEventListener('mouseenter', function () {
+    clearTimeout(summaryHideTimer);
+  });
+  summaryPopover.addEventListener('mouseleave', function () {
+    summaryHideTimer = setTimeout(hideSummary, 120);
+  });
+  window.addEventListener('scroll', hideSummary, { passive: true });
+  window.addEventListener('resize', hideSummary);
 
   var label = document.getElementById('overall-label');
   var fill = document.getElementById('overall-fill');
